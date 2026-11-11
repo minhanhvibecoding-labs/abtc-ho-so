@@ -1,0 +1,26 @@
+# Dữ liệu hồ sơ, Excel tổng hợp, kết quả, sao lưu – KHÔNG đưa lên GitHub
+Folder Hồ sơ*/
+DỮ LIỆU GỐC/
+Báo cáo tuần/
+_HE_THONG/cache/
+_HE_THONG/backup/
+_HE_THONG/thay_doi/
+_HE_THONG/thong_ke/
+_HE_THONG/_luu_tru/
+_HE_THONG/ABTC_nhat_ky.csv
+_HE_THONG/kho.json
+*.xlsx
+*.xls
+*.docx
+*.doc
+*.pdf
+*.jpg
+*.jpeg
+*.lnk
+*.ods
+# Kết quả: chỉ giữ 2 mẫu Excel rỗng của ABTC
+KẾT QUẢ/*
+!KẾT QUẢ/MẪU/
+KẾT QUẢ/MẪU/*
+!KẾT QUẢ/MẪU/MẪU - ABTC 2026.xlsx
+!KẾT QUẢ/MẪU/MẪU - ABTC 2026 (khung mới).xlsx

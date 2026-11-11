@@ -1,0 +1,1179 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hồ sơ ABTC</title>
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/icon.png">
+<style>
+  /* ---------- Bảng màu & chữ (trang nhã công sở: navy / trắng / xám nhạt) ---------- */
+  :root {
+    --navy: #1e3a5f; --navy-2: #2b4f7e; --navy-soft: #e8eef6; --navy-line: #c5d3e6;
+    --bg: #f3f5f8; --panel: #ffffff; --line: #e1e5ec; --line-2: #eef1f5; --text: #1b2430; --muted: #5f6b7a; --muted-2: #8a94a3;
+    --ok: #1b7f4b; --ok-soft: #e4f3ea; --warn: #9a5b00; --warn-soft: #fff3dd; --bad: #b3261e; --bad-soft: #fbe9e7; --info: #1e3a5f; --info-soft: #e8eef6;
+    --r: 8px; --sh: 0 1px 2px rgba(16,24,40,.06); --sh-2: 0 8px 28px rgba(16,24,40,.14); --head-h: 52px;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; font: 14px/1.5 "Segoe UI", system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  a { color: var(--navy); }
+  code { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12.5px; background: var(--line-2); padding: 1px 5px; border-radius: 4px; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; } ::-webkit-scrollbar-thumb { background: #c9d0da; border-radius: 10px; border: 2px solid transparent; background-clip: padding-box; } ::-webkit-scrollbar-thumb:hover { background: #aeb8c6; background-clip: padding-box; border: 2px solid transparent; }
+
+  /* ---------- Thanh đầu ---------- */
+  header.top { height: var(--head-h); display: flex; align-items: center; gap: 18px; padding: 0 18px; background: var(--panel); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; }
+  .brand { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+  .brand img { width: 30px; height: 30px; display: block; }
+  .brand b { display: block; font-size: 15px; line-height: 1.15; color: var(--navy); }
+  .brand small { display: block; font-size: 11.5px; color: var(--muted); line-height: 1.1; }
+  nav.tabs { display: flex; gap: 2px; flex: 1; margin-left: 10px; }
+  nav.tabs button { border: 0; background: none; padding: 0 14px; height: var(--head-h); cursor: pointer; color: var(--muted); font-weight: 500; border-bottom: 2px solid transparent; }
+  nav.tabs button:hover { color: var(--text); }
+  nav.tabs button.on { color: var(--navy); border-bottom-color: var(--navy); font-weight: 600; }
+  .top-r { display: flex; gap: 8px; align-items: center; }
+
+  /* ---------- Nút ---------- */
+  .btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--panel); padding: 6px 12px; border-radius: 6px; cursor: pointer; line-height: 1.3; white-space: nowrap; box-shadow: var(--sh); transition: background .12s, border-color .12s; }
+  .btn:hover { border-color: var(--navy-line); background: #fafbfd; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .btn.pri { background: var(--navy); border-color: var(--navy); color: #fff; } .btn.pri:hover { background: var(--navy-2); }
+  .btn.bad { background: var(--bad); border-color: var(--bad); color: #fff; }
+  .btn.ghost { box-shadow: none; background: transparent; border-color: transparent; color: var(--muted); } .btn.ghost:hover { background: var(--line-2); color: var(--text); }
+  .btn.sm { padding: 3px 9px; font-size: 12.5px; border-radius: 5px; }
+  .btn.ic { padding: 5px; width: 30px; height: 30px; justify-content: center; }
+  .btn.ic.sm { width: 26px; height: 26px; padding: 3px; }
+  .btn svg { width: 15px; height: 15px; flex: none; }
+  .btn.sm svg { width: 13px; height: 13px; }
+  .link { border: 0; background: none; color: var(--navy); cursor: pointer; padding: 0; text-decoration: underline; text-underline-offset: 2px; font-size: 12.5px; }
+  .link:hover { color: var(--navy-2); }
+
+  /* ---------- Ô nhập ---------- */
+  .inp { width: 100%; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; background: #fff; outline: none; transition: border-color .12s, box-shadow .12s; }
+  .inp:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(30,58,95,.12); }
+  .inp.sm { padding: 3px 7px; font-size: 13px; border-radius: 5px; }
+  textarea.inp { resize: vertical; min-height: 36px; line-height: 1.4; }
+
+  /* ---------- Bố cục tab Hồ sơ ---------- */
+  main { height: calc(100vh - var(--head-h)); }
+  .tab { display: none; height: 100%; } .tab.on { display: block; }
+  #hoso.on { display: grid; grid-template-columns: 330px minmax(0, 1fr); }
+  aside.side { background: var(--panel); border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
+  .side-top { padding: 12px 12px 8px; border-bottom: 1px solid var(--line); display: grid; gap: 8px; }
+  .lbl { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted-2); }
+  .row { display: flex; gap: 6px; align-items: center; }
+  .row .inp { flex: 1; min-width: 0; }
+  .search { position: relative; } .search svg { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--muted-2); }
+  .search .inp { padding-left: 30px; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 2px 10px; font-size: 12px; cursor: pointer; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+  .chip b { font-weight: 600; color: var(--muted-2); }
+  .chip.on { background: var(--navy); border-color: var(--navy); color: #fff; } .chip.on b { color: #d6e0ee; }
+  .side-meta { display: flex; justify-content: space-between; align-items: center; padding: 6px 14px; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--line-2); }
+  .list { overflow: auto; padding: 6px 8px 14px; flex: 1; min-height: 0; }
+  .item { display: grid; grid-template-columns: 10px 1fr; gap: 10px; padding: 9px 10px; border-radius: 7px; cursor: pointer; border: 1px solid transparent; margin-bottom: 3px; }
+  .item:hover { background: var(--bg); } .item.on { background: var(--navy-soft); border-color: var(--navy-line); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; background: #c9d0da; }
+  .dot.ok { background: var(--ok); } .dot.warn { background: #e0a100; } .dot.bad { background: var(--bad); } .dot.info { background: var(--navy-2); }
+  .item .t { font-weight: 600; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .item .s { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .item .bd { margin-top: 5px; display: flex; gap: 4px; flex-wrap: wrap; }
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 500; background: var(--line-2); color: var(--muted); white-space: nowrap; line-height: 1.5; }
+  .b-ok { background: var(--ok-soft); color: var(--ok); } .b-warn { background: var(--warn-soft); color: var(--warn); } .b-bad { background: var(--bad-soft); color: var(--bad); } .b-info { background: var(--info-soft); color: var(--info); }
+  .b-src { background: #fff; border: 1px solid var(--line); color: var(--muted); font-weight: 400; }
+  .empty { color: var(--muted); padding: 34px 20px; text-align: center; line-height: 1.6; }
+  .empty b { display: block; color: var(--text); margin-bottom: 4px; font-size: 15px; }
+
+  /* Thanh thêm hồ sơ (kéo-thả / chọn / dán) */
+  .drop { border: 1.5px dashed var(--navy-line); border-radius: 7px; background: #f8fafc; padding: 8px 10px; display: grid; gap: 6px; transition: border-color .15s, background .15s; }
+  .drop.over { border-color: var(--navy); background: var(--navy-soft); }
+  .drop .hint { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; } .drop .hint svg { width: 14px; height: 14px; color: var(--navy-2); }
+  #dropover { position: fixed; inset: 0; background: rgba(30,58,95,.16); display: none; align-items: center; justify-content: center; z-index: 60; backdrop-filter: blur(1px); }
+  #dropover.on { display: flex; }
+  #dropover .dropbox { border: 3px dashed var(--navy); border-radius: 16px; background: #fff; padding: 34px 56px; font-size: 18px; text-align: center; color: var(--navy); pointer-events: none; box-shadow: var(--sh-2); }
+  #dropover .dropbox small { display: block; font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+  /* ---------- Nội dung hồ sơ ---------- */
+  .content { overflow: auto; min-width: 0; padding: 16px 20px 40px; }
+  .hs-head { display: flex; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .hs-head h2 { margin: 0; font-size: 19px; line-height: 1.3; color: var(--navy); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .hs-head .sub { color: var(--muted); font-size: 12.5px; margin-top: 2px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .hs-head .acts { margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--sh); margin-bottom: 12px; }
+  .card-h { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line-2); }
+  .card-h h3 { margin: 0; font-size: 13.5px; font-weight: 600; letter-spacing: .01em; }
+  .card-h .n { color: var(--muted-2); font-weight: 500; }
+  .card-h .acts { margin-left: auto; display: flex; gap: 6px; align-items: center; }
+  .card-b { padding: 12px 14px; }
+  .card-b.p0 { padding: 0; }
+  .note { font-size: 12.5px; color: var(--muted); padding: 8px 14px; border-top: 1px solid var(--line-2); background: #fbfcfd; border-radius: 0 0 var(--r) var(--r); }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px 18px; }
+  .kv span { display: block; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted-2); margin-bottom: 1px; }
+  .kv { font-size: 13.5px; } .kv .edit { margin-left: 4px; vertical-align: middle; }
+
+  /* Thanh tiến trình trạng thái */
+  .steps { display: flex; align-items: flex-start; padding: 14px 14px 10px; gap: 0; overflow-x: auto; }
+  .step { flex: 1; min-width: 92px; position: relative; text-align: center; font-size: 12px; color: var(--muted-2); }
+  .step::before { content: ''; position: absolute; top: 9px; left: -50%; right: 50%; height: 2px; background: var(--line); }
+  .step:first-child::before { display: none; }
+  .step .c { width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 2px solid var(--line); margin: 0 auto 6px; position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--muted-2); }
+  .step.done { color: var(--muted); } .step.done::before { background: var(--navy); } .step.done .c { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .step.cur { color: var(--navy); font-weight: 600; } .step.cur::before { background: var(--navy); } .step.cur .c { border-color: var(--navy); box-shadow: 0 0 0 4px rgba(30,58,95,.15); color: var(--navy); }
+  .step.ok::before { background: var(--ok); } .step.ok .c { background: var(--ok); border-color: var(--ok); color: #fff; } .step.ok { color: var(--ok); font-weight: 600; }
+  .step.bad .c { background: var(--bad); border-color: var(--bad); color: #fff; } .step.bad { color: var(--bad); font-weight: 600; } .step.bad::before { background: var(--bad); }
+
+  /* Bảng */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line-2); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; background: #f8f9fb; position: sticky; top: 0; z-index: 1; white-space: nowrap; }
+  tbody tr:hover td { background: #fafbfd; }
+  tr:last-child td { border-bottom: 0; }
+  td.nw, th.nw { white-space: nowrap; }
+  tr.need td:first-child { box-shadow: inset 3px 0 0 #e0a100; }
+  tr.off td { color: var(--muted-2); }
+  tr.sel td { background: var(--navy-soft); }
+  td .inp { min-width: 80px; }
+  .acts-td { white-space: nowrap; text-align: right; }
+  .fname { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; }
+  .fname .nm { word-break: break-word; }
+  .fname .btn.ic.sm { opacity: 0; transition: opacity .1s; } tr:hover .fname .btn.ic.sm, .fname .btn.ic.sm:focus { opacity: 1; }
+  .goiy { font-size: 12px; color: var(--navy-2); margin-top: 2px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .goiy code { color: var(--navy); background: var(--navy-soft); }
+
+  /* Ý kiến liên ngành */
+  .ln { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+  .ln > div { border: 1px solid var(--line); border-radius: 7px; padding: 10px 12px; font-size: 12.5px; background: #fff; }
+  .ln .h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; } .ln b { font-size: 13px; }
+  .ln .kl { color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .ln .so { color: var(--text); }
+  ul.plain { margin: 0; padding-left: 20px; } ul.plain li { margin-bottom: 4px; }
+
+  /* Tổng quan trong tab Thống kê / Công cụ */
+  .wrap { padding: 18px 22px 40px; max-width: 1100px; margin: 0 auto; }
+  .tools { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+  .tool { border: 1px solid var(--line); border-radius: 7px; padding: 12px 14px; background: #fff; cursor: pointer; text-align: left; display: grid; gap: 3px; box-shadow: var(--sh); }
+  .tool:hover { border-color: var(--navy-line); background: #fafbfd; } .tool b { font-size: 13.5px; } .tool small { color: var(--muted); font-size: 12px; }
+  pre.log { background: #0f172a; color: #e2e8f0; padding: 12px 14px; border-radius: 7px; overflow: auto; max-height: 420px; font-size: 12.5px; margin: 0; line-height: 1.5; font-family: Consolas, "Cascadia Mono", monospace; }
+  pre.log .ok { color: #4ade80; } pre.log .bad { color: #f87171; }
+
+  /* ---------- Lớp phủ: đang xử lý, hộp thoại, thông báo ---------- */
+  #busy { position: fixed; inset: 0; background: rgba(243,245,248,.72); display: none; align-items: center; justify-content: center; z-index: 80; backdrop-filter: blur(1px); }
+  #busy.on { display: flex; }
+  #busy .bx { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 18px 26px; box-shadow: var(--sh-2); text-align: center; min-width: 260px; max-width: 460px; }
+  #busy .bx b { display: block; font-weight: 600; margin-top: 10px; } #busy .bx small { display: block; color: var(--muted); margin-top: 3px; font-size: 12.5px; }
+  .spin { width: 28px; height: 28px; border: 3px solid var(--navy-soft); border-top-color: var(--navy); border-radius: 50%; margin: 0 auto; animation: sp .8s linear infinite; }
+  @keyframes sp { to { transform: rotate(360deg); } }
+  #modal { position: fixed; inset: 0; background: rgba(16,24,40,.45); display: none; align-items: center; justify-content: center; z-index: 70; padding: 20px; }
+  #modal.on { display: flex; }
+  #modal .box { background: #fff; border-radius: 10px; box-shadow: var(--sh-2); width: min(560px, 100%); max-height: 92vh; display: flex; flex-direction: column; animation: pop .14s ease-out; }
+  .item { user-select: none; } .item.sel { background: #dbe5f1; border-color: #9fb5d1; } .item.sel.on { border-color: var(--navy-2); }
+  .selbar { display: none; align-items: center; gap: 6px; padding: 6px 10px 6px 14px; background: var(--navy-soft); border-bottom: 1px solid var(--navy-line); font-size: 12.5px; flex-wrap: wrap; }
+  .selbar.on { display: flex; } .selbar #selN { flex: 1; font-weight: 600; color: var(--navy); white-space: nowrap; }.ctx { position: fixed; z-index: 95; min-width: 230px; background: #fff; border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--sh-2); padding: 4px; display: grid; animation: pop .1s ease-out; }  .ctx button { border: 0; background: none; text-align: left; font: inherit; font-size: 13.5px; color: var(--text); padding: 7px 12px; border-radius: 5px; cursor: pointer; outline: none; }  .ctx button:hover:not([disabled]), .ctx button:focus-visible { background: var(--navy-soft); }  .ctx button.bad { color: var(--bad); } .ctx button.bad:hover:not([disabled]), .ctx button.bad:focus-visible { background: var(--bad-soft); }  .ctx button[disabled] { color: var(--muted-2); cursor: default; }  .ctx .sep { height: 1px; background: var(--line-2); margin: 4px 2px; }  #kho { flex: 1; min-width: 0; cursor: pointer; }
+  .dy-noi { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; } .dy-noi .chip.on { background: var(--navy-soft); border-color: var(--navy-line); color: var(--text); }
+  .dy-bar { display: flex; gap: 8px; margin-bottom: 8px; } .dy-bar .inp { flex: 1; font-family: Consolas, "Cascadia Mono", monospace; font-size: 12.5px; }
+  .dy-ds { border: 1px solid var(--line); border-radius: 7px; height: min(46vh, 420px); overflow: auto; background: #fff; }
+  .dy-row { display: flex; align-items: center; gap: 8px; padding: 6px 10px; cursor: pointer; border-bottom: 1px solid var(--line-2); }
+  .dy-row:hover { background: var(--navy-soft); } .dy-row svg { width: 16px; height: 16px; color: var(--muted); flex: none; } .dy-row .t { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dy-row .dy-ck, .dy-head input { width: 16px; height: 16px; margin: 0; flex: none; cursor: pointer; accent-color: var(--navy); }
+  .dy-head { background: #f8fafc; font-size: 12.5px; color: var(--muted); position: sticky; top: 0; z-index: 1; }
+  .dy-gio { margin-top: 8px; font-size: 12.5px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; max-height: 18vh; overflow: auto; }
+  .dy-chip a { color: inherit; text-decoration: none; margin-left: 2px; opacity: .7; } .dy-chip a:hover { opacity: 1; }
+  .dy-trong { padding: 14px; color: var(--muted); } .dy-tt { font-size: 12.5px; color: var(--muted); margin-top: 8px; min-height: 18px; }
+  #modal .box.w { width: min(860px, 100%); } #modal .box.auto { width: auto; max-width: 96vw; }
+  @keyframes pop { from { transform: translateY(6px); opacity: .6; } to { transform: none; opacity: 1; } }
+  .m-h { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--line-2); } .m-h h3 { margin: 0; font-size: 15px; flex: 1; }
+  .m-b { padding: 14px 16px; overflow: auto; } .m-b p { margin: 0 0 10px; } .m-b .fld { margin-bottom: 10px; } .m-b .fld label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 3px; }
+  .m-f { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--line-2); flex-wrap: wrap; }
+  .m-f .left { margin-right: auto; color: var(--muted); font-size: 12.5px; align-self: center; }
+  .m-b img.pv { max-width: 100%; display: block; cursor: zoom-in; border: 1px solid var(--line); border-radius: 6px; }
+  .m-b img.pv.zoom { max-width: none; width: 180%; cursor: zoom-out; }
+  pre.plain { white-space: pre-wrap; margin: 0; font: inherit; }
+  #toasts { position: fixed; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 90; max-width: 440px; }
+  .toast { display: flex; gap: 10px; align-items: flex-start; padding: 10px 14px; border-radius: 8px; background: #1b2430; color: #fff; box-shadow: var(--sh-2); white-space: pre-line; font-size: 13.5px; animation: slide .18s ease-out; border-left: 4px solid var(--navy-2); }
+  .toast.ok { border-left-color: #34c47c; } .toast.warn { border-left-color: #f2b32b; } .toast.bad { border-left-color: #f0665c; }
+  .toast svg { width: 16px; height: 16px; flex: none; margin-top: 2px; }
+  @keyframes slide { from { transform: translateX(16px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+  @media (max-width: 900px) {
+    #hoso.on { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
+    aside.side { border-right: 0; border-bottom: 1px solid var(--line); max-height: 46vh; }
+    .brand small { display: none; } .top-r .txt { display: none; }
+    .content { padding: 12px 12px 30px; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><img src="/icon.svg" alt=""><div><b>Hồ sơ ABTC</b><small>Phòng Lãnh sự – Sở Ngoại vụ Hà Nội</small></div></div>
+  <nav class="tabs">
+    <button data-tab="hoso" class="on">Hồ sơ</button>
+    <button data-tab="thongke">Thống kê</button>
+    <button data-tab="congcu">Công cụ</button>
+  </nav>
+  <div class="top-r">
+    <button class="btn" onclick="moTep(TQ.excel)" title="Mở file Excel tổng hợp ABTC 2026"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><span class="txt">Excel tổng hợp</span></button>
+    <button class="btn ghost ic" onclick="tat()" title="Tắt ứng dụng"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18.4 6.6a8 8 0 1 1-12.8 0M12 2v8"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <!-- ================= HỒ SƠ ================= -->
+  <section id="hoso" class="tab on">
+    <aside class="side">
+      <div class="side-top">
+        <div>
+          <div class="lbl">Kho hồ sơ</div>
+          <div class="row" style="margin-top:3px">
+            <input type="hidden" id="cha">
+            <select class="inp sm" id="kho" onchange="doiKho(this.value)" title="Chọn kho hồ sơ"></select>
+            <button class="btn ic" onclick="menuKho(event)" title="Quản lý kho: tạo kho mới, đổi tên, gỡ"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+            <button class="btn ic" onclick="taiDs()" title="Tải lại danh sách"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 3v6h-6"/></svg></button>
+          </div>
+        </div>
+        <div class="drop" id="drop">
+          <div class="hint" title="Folder nằm ngoài dự án sẽ được sao chép vào thư mục đang xem; bản gốc giữ nguyên"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 10v6M9 13l3 3 3-3"/></svg><span><b>Thêm hồ sơ:</b> kéo folder vào đây, hoặc</span></div>
+          <div class="row">
+            <button class="btn sm" onclick="chonFolder()">Chọn folder…</button>
+            <input class="inp sm" id="dd" placeholder="hoặc dán đường dẫn rồi Enter (nhiều folder: chọn trong Explorer → Copy as path)" onkeydown="if(event.key==='Enter')nhapDuongDan()">
+            <button class="btn sm pri" onclick="nhapDuongDan()">Mở</button>
+          </div>
+        </div>
+        <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input class="inp sm" id="tim" placeholder="Tìm theo tên doanh nghiệp / folder" oninput="veDs()"></div>
+        <div class="chips" id="loc"></div>
+      </div>
+      <div class="side-meta"><span id="dsdem">Đang tải…</span><button class="btn sm" onclick="quetTatCa()" title="Đọc file mới trong các folder và phân tích lại để cập nhật trạng thái"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 3v6h-6"/></svg>Quét &amp; cập nhật</button></div>
+      <div class="selbar" id="selbar"><span id="selN"></span><button class="btn sm" onclick="phanTichNhieu(dsChon())">Phân tích lại</button><button class="btn sm" onclick="chuyenNhieu()">Chuyển kho</button><button class="btn sm bad" onclick="xoaHoSo(dsChon())">Xóa</button><button class="btn ghost sm ic" onclick="boChonNhieu()" title="Bỏ chọn (Esc)">✕</button></div>
+      <div class="list" id="ds"></div>
+    </aside>
+    <div class="content" id="ct"><div class="empty"><b>Chưa chọn hồ sơ</b>Chọn một hồ sơ ở danh sách bên trái để xem phân tích, đề xuất ghi Excel và đổi tên văn bản.</div></div>
+  </section>
+
+  <!-- ================= THỐNG KÊ ================= -->
+  <section id="thongke" class="tab"><div class="wrap" style="overflow:auto;height:100%">
+    <div class="card">
+      <div class="card-h"><h3>Lập thống kê</h3><span class="n" id="tkn"></span>
+        <div class="acts"><button class="btn sm" onclick="chonHet(true)">Chọn tất cả</button><button class="btn sm" onclick="chonHet(false)">Bỏ chọn</button></div></div>
+      <div class="card-b">
+        <div class="chips" id="tktom" style="margin-bottom:10px"></div>
+        <div id="tkds"></div>
+      </div>
+      <div class="m-f" style="border-radius:0 0 var(--r) var(--r)"><span class="left">Hồ sơ đã có kết quả đọc bằng AI (<code>ket_qua.json</code>) dùng kết quả đó; còn lại dùng phân tích theo quy tắc.</span>
+        <span id="tkkq"></span><button class="btn pri" onclick="lapThongKe()">Lập thống kê</button></div>
+    </div>
+  </div></section>
+
+  <!-- ================= CÔNG CỤ ================= -->
+  <section id="congcu" class="tab"><div class="wrap" style="overflow:auto;height:100%">
+    <div class="card">
+      <div class="card-h"><h3>Máy và cài đặt</h3></div>
+      <div class="card-b">
+        <div class="tools">
+          <button class="tool" onclick="kiemTra()"><b>Kiểm tra máy</b><small>Excel, Word, tùy chọn đọc PDF, file mẫu</small></button>
+          <button class="tool" onclick="moTep('README.md')"><b>Mở README</b><small>Hướng dẫn dùng và danh sách lệnh</small></button>
+          <button class="tool" onclick="moTep('KẾT QUẢ')"><b>Thư mục KẾT QUẢ</b><small>Excel tổng hợp, thống kê, báo cáo tuần</small></button>
+          <button class="tool" onclick="moTep('_HE_THONG\\backup')"><b>Thư mục sao lưu</b><small>Bản sao Excel trước mỗi lần ghi</small></button>
+          <button class="tool" onclick="moTep('_HE_THONG\\cache')"><b>Thư mục cache</b><small>Chữ và ảnh đã trích từ các folder hồ sơ</small></button>
+          <button class="tool" onclick="moTep('_HE_THONG\\ABTC_nhat_ky.csv')"><b>Nhật ký sự kiện</b><small>ABTC_nhat_ky.csv – dùng cho báo cáo tuần</small></button>
+        </div>
+        <pre class="log" id="kt" style="display:none;margin-top:12px"></pre>
+      </div>
+      <div class="note">Ứng dụng chạy hoàn toàn trên máy (localhost), không gửi dữ liệu ra ngoài. Mọi lần ghi Excel đều tự sao lưu vào <code>_HE_THONG\backup</code> và chỉ ghi khi ô chưa bị ai sửa kể từ lúc phân tích. Phần đọc hiểu dùng quy tắc + OCR của Windows; chỗ chưa chắc được đánh dấu để nhập tay hoặc nhờ Claude Code đọc sâu hơn.</div>
+    </div>
+  </div></section>
+</main>
+
+<div id="busy"><div class="bx"><div class="spin"></div><b id="busymsg">Đang xử lý…</b><small id="busysub"></small></div></div>
+<div id="dropover"><div class="dropbox">Thả folder hồ sơ để thêm vào<br><b id="dropcha"></b><small>Có thể thả nhiều folder cùng lúc. Folder trùng tên sẽ được bổ sung tệp mới.</small></div></div>
+<div id="modal"><div class="box" id="mbox"></div></div>
+<div id="toasts"></div>
+
+<script>
+// ====================== Hằng số, tiện ích ======================
+const TT = { S0_MOI:['Mới tiếp nhận','', 'info'], S1_CHO_BO_SUNG:['Chờ DN bổ sung','b-warn','warn'], S2_DA_BO_SUNG:['DN đã bổ sung','b-info','info'],
+  S3_XIN_Y_KIEN_LN:['Đang xin ý kiến LN','b-info','info'], S4_DON_DOC_LN:['Đã đôn đốc LN','b-warn','warn'], S5_DU_Y_KIEN_LN:['Đủ ý kiến LN, chờ trình','b-info','info'],
+  S5b_DANG_TRINH_SO:['Đang trình BGĐ Sở','b-info','info'], S6_DA_TRINH_UB:['Đã trình UB, chờ KQ','b-info','info'], S7_UB_CHO_PHEP:['UB cho phép','b-ok','ok'],
+  S8_UB_KHONG_CHO_PHEP:['UB không cho phép','b-bad','bad'], S9_TRA_HO_SO:['Trả hồ sơ','b-bad','bad'], S10_DN_RUT:['DN rút hồ sơ','b-bad','bad'] };
+const NHOM = { choln: ['S3_', 'S4_'], xong: ['S7_', 'S8_', 'S9_', 'S10_'] };   // còn lại = đang xử lý
+const LN = { CA:'Công an', THUE:'Thuế', BHXH:'BHXH', HQ:'Hải quan' };
+const LOAI = { XIN_Y_KIEN_LN:'CV xin ý kiến LN', LN_TRA_LOI:'LN trả lời', TRINH_UB:'Tờ trình UB', KQ_UB:'Kết quả UB', PHIEU_TRINH:'Phiếu trình', DU_THAO:'Dự thảo',
+  YC_BO_SUNG:'YC bổ sung', DON_DOC_LN:'Đôn đốc LN', TRA_HO_SO:'Trả hồ sơ', DN_HO_SO_KEM:'Hồ sơ DN kèm', TRUNG:'Trùng', KHAC:'Khác' };
+const I = {
+  pen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+  img: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>',
+  fold: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  ref: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 3v6h-6"/></svg>',
+  ok: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  warn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 21h20L12 3z"/><path d="M12 10v5M12 18h.01"/></svg>',
+  info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
+  tag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>' };
+let TQ = {}, DS = [], CUR = null, PT = null, LOC = 'all', MO = new Set(), DOI_TEN = -1, TKCHON = new Set(), TK_INIT = false, TK_FILE = '', KHO = [];
+const $ = s => document.querySelector(s);
+const arr = x => Array.isArray(x) ? x : (x == null ? [] : [x]);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const boDau = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
+const ttKey = tt => Object.keys(TT).find(k => String(tt || '').startsWith(k));
+const badge = tt => { const k = ttKey(tt); const [t, c] = TT[k] || [tt || 'Chưa phân tích', '']; return `<span class="badge ${c}">${esc(t)}</span>`; };
+const dotClass = tt => { const k = ttKey(tt); return k ? TT[k][2] : ''; };
+const nhom = d => { const t = d.trang_thai || ''; if (!t) return 'chua'; if (NHOM.choln.some(p => t.startsWith(p))) return 'choln'; if (NHOM.xong.some(p => t.startsWith(p))) return 'xong'; return 'xuly'; };
+const srcBadge = s => arr(String(s || '').split(' + ')).filter(Boolean).map(x => `<span class="badge b-src">${esc(x)}</span>`).join(' ');
+
+function busy(on, msg, sub) { $('#busymsg').textContent = msg || 'Đang xử lý…'; $('#busysub').textContent = sub || ''; $('#busy').classList.toggle('on', !!on); }
+async function fetchJson(path, body) {
+  // Mất kết nối tới máy chủ (đang khởi động lại, vừa mở lại app…): tự thử lại 3 lần, cách nhau 2 giây, rồi mới báo lỗi dễ hiểu.
+  // Các thao tác ghi đều an toàn khi lặp: ghi Excel kiểm tra giá trị cũ, xóa/chuyển hồ sơ lần 2 báo "không tìm thấy".
+  let r;
+  for (let lan = 0; ; lan++) {
+    try { r = await fetch(path, body === undefined ? {} : { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }); break; }
+    catch (e) {
+      if (lan >= 3) throw new Error('Không kết nối được máy chủ ứng dụng. Mở lại app bằng lối tắt "Mở ứng dụng" (hoặc tải lại trang sau vài giây) rồi thử lại.');
+      const sub = $('#busysub'); if (sub && $('#busy').classList.contains('on')) sub.textContent = `Mất kết nối máy chủ – đang thử lại (${lan + 1}/3)…`;
+      await new Promise(res => setTimeout(res, 2000));
+    }
+  }
+  let j = {}; try { j = await r.json(); } catch {}
+  if (!r.ok) { const er = new Error(j.loi || ('Lỗi ' + r.status)); er.data = j; throw er; }
+  return j;
+}
+async function api(path, body, msg, sub) { busy(true, msg, sub); try { return await fetchJson(path, body); } finally { busy(false); } }
+function toast(msg, kieu = 'info', ms) {
+  const t = document.createElement('div'); t.className = 'toast ' + kieu; t.innerHTML = (I[kieu] || I.info) + '<div>' + esc(msg) + '</div>';
+  $('#toasts').appendChild(t); setTimeout(() => t.remove(), ms || (kieu === 'bad' ? 9000 : 4500));
+}
+function bao(e) { toast(e.message || String(e), 'bad'); }
+
+// Hộp thoại dùng chung: hoi({tieuDe, noiDung, inputs:[{id,label,value,placeholder,goiY}], nut:[{id,label,pri,bad}], rong})
+// -> Promise: { nut, values } hoặc null khi đóng/Esc
+function hoi(o) {
+  return new Promise(res => {
+    const box = $('#mbox'); box.className = 'box' + (o.rong ? ' ' + o.rong : '');
+    const inputs = arr(o.inputs).map(f => `<div class="fld"><label>${esc(f.label)}</label><input class="inp" id="hf_${esc(f.id)}" value="${esc(f.value)}" placeholder="${esc(f.placeholder)}">
+      ${f.goiY ? `<div class="goiy">Gợi ý: <code style="cursor:pointer" title="Bấm để dùng" onclick="document.getElementById('hf_${esc(f.id)}').value=this.textContent">${esc(f.goiY)}</code></div>` : ''}</div>`).join('');
+    const nut = arr(o.nut).length ? arr(o.nut) : [{ id: 'ok', label: 'Đóng' }];
+    box.innerHTML = `<div class="m-h"><h3>${esc(o.tieuDe || '')}</h3><button class="btn ghost ic" data-nut="__x" title="Đóng (Esc)">${I.x}</button></div>
+      <div class="m-b">${o.noiDung || ''}${inputs}</div>
+      ${nut.length ? `<div class="m-f">${o.chuThich ? `<span class="left">${o.chuThich}</span>` : ''}${nut.map(n => `<button class="btn ${n.pri ? 'pri' : ''} ${n.bad ? 'bad' : ''}" data-nut="${esc(n.id)}">${esc(n.label)}</button>`).join('')}</div>` : ''}`;
+    const dong = id => { $('#modal').classList.remove('on'); document.removeEventListener('keydown', key);
+      if (id === '__x' || id == null) return res(null);
+      const values = {}; arr(o.inputs).forEach(f => values[f.id] = ($('#hf_' + f.id) || {}).value); res({ nut: id, values }); };
+    const key = e => { if (e.key === 'Escape') dong(null); if (e.key === 'Enter' && e.target.tagName === 'INPUT') { const p = nut.find(n => n.pri) || nut[0]; dong(p.id); } };
+    box.querySelectorAll('[data-nut]').forEach(b => b.onclick = () => dong(b.dataset.nut));
+    $('#modal').onclick = e => { if (e.target === $('#modal')) dong(null); };
+    document.addEventListener('keydown', key);
+    $('#modal').classList.add('on');
+    const f = box.querySelector('input.inp'); if (f) { f.focus(); f.select(); }
+    if (o.sauKhiMo) o.sauKhiMo(box);
+  });
+}
+const xacNhan = (tieuDe, noiDung, nhanOk = 'Đồng ý', bad) => hoi({ tieuDe, noiDung, nut: [{ id: 'ok', label: nhanOk, pri: !bad, bad }, { id: 'huy', label: 'Hủy' }] }).then(r => !!r && r.nut === 'ok');
+
+function chuyenTab(id) {
+  document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('on', x.dataset.tab === id));
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x.id === id));
+  if (id === 'thongke') veTkDs();
+}
+document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => chuyenTab(b.dataset.tab));
+
+// ====================== Khởi động, danh sách hồ sơ ======================
+async function init() {
+  try {
+    TQ = await api('/api/tong-quan');
+    KHO = arr((await fetchJson('/api/kho')).ds);
+    let cha = null; try { cha = localStorage.getItem('abtc_cha'); } catch {}
+    $('#cha').value = cha != null && cha !== '' ? cha : ((KHO.find(k => k.ton_tai) || {}).rel || TQ.thu_muc_mac_dinh);
+    LOC = localStorage.getItem('abtc_loc') || 'all';
+    if (!TQ.word_pdf) toast('Chưa bật tùy chọn Word để đọc PDF – vào tab Công cụ → Kiểm tra máy', 'warn', 8000);
+    await taiDs();
+    const qs = new URLSearchParams(location.search); const q = qs.get('ho_so');   // mở thẳng 1 hồ sơ: ?ho_so=<tên viết tắt> ; mở tab: ?tab=thongke
+    if (q) { const i = DS.findIndex(d => boDau(d.ten + ' ' + d.dn).includes(boDau(q))); if (i >= 0) await chon(i); }
+    if (qs.get('tab')) chuyenTab(qs.get('tab'));
+    if (qs.has('chon_folder')) chonFolder();   // mở thẳng hộp thoại chọn folder: ?chon_folder
+  } catch (e) { bao(e); }
+}
+async function taiDs() {
+  try { localStorage.setItem('abtc_cha', $('#cha').value); } catch {}
+  veKho();
+  try { DS = arr(await api('/api/ds-folder?cha=' + encodeURIComponent($('#cha').value))); veDs(); } catch (e) { bao(e); }
+}
+function veLoc() {
+  const dem = { all: DS.length, xuly: 0, choln: 0, xong: 0, cannhap: 0 };
+  DS.forEach(d => { const n = nhom(d); if (dem[n] != null) dem[n]++; if (d.can_nhap || (!d.trang_thai && !d.la_thu_muc)) dem.cannhap++; });
+  const ds = [['all', 'Tất cả'], ['xuly', 'Đang xử lý'], ['choln', 'Chờ LN'], ['xong', 'Hoàn thành'], ['cannhap', 'Cần nhập']];
+  $('#loc').innerHTML = ds.map(([k, t]) => `<button class="chip ${LOC === k ? 'on' : ''}" onclick="datLoc('${k}')">${t} <b>${dem[k]}</b></button>`).join('');
+}
+function datLoc(k) { LOC = k; try { localStorage.setItem('abtc_loc', k); } catch {} veDs(); }
+function locDs() {
+  const q = boDau($('#tim').value.trim());
+  return DS.map((d, i) => ({ d, i })).filter(({ d }) => {
+    if (LOC === 'cannhap') { if (!(d.can_nhap || (!d.trang_thai && !d.la_thu_muc))) return false; } else if (LOC !== 'all' && nhom(d) !== LOC) return false;
+    return !q || boDau(d.ten + ' ' + d.dn).includes(q);
+  });
+}
+function veDs() {
+  veLoc();
+  const ds = locDs();
+  $('#dsdem').textContent = DS.length ? (ds.length === DS.length ? `${DS.length} hồ sơ` : `${ds.length} / ${DS.length} hồ sơ`) : 'Không có hồ sơ';
+  if (!DS.length) { $('#ds').innerHTML = '<div class="empty"><b>Không có folder hồ sơ</b>Kiểm tra lại thư mục ở trên, hoặc kéo một folder hồ sơ vào đây.</div>'; return; }
+  if (!ds.length) { $('#ds').innerHTML = '<div class="empty"><b>Không có hồ sơ khớp</b>Thử bộ lọc khác hoặc xóa ô tìm kiếm.</div>'; return; }
+  $('#ds').innerHTML = ds.map(({ d, i }) => `
+    <div class="item ${CUR && CUR.rel === d.rel ? 'on' : ''} ${SEL.has(d.rel) ? 'sel' : ''}" data-i="${i}" title="${esc(d.rel)}&#10;Ctrl + bấm: chọn thêm · Shift + bấm hoặc kéo chuột: chọn nhiều · Chuột phải: thao tác">
+      <div class="dot ${dotClass(d.trang_thai)}"></div>
+      <div>
+        <div class="t">${esc(d.dn || d.ten)}</div>
+        <div class="s">${d.nhom ? `<span style="color:var(--muted-2)">${esc(d.nhom)} › </span>` : ''}${esc(d.ten)}</div>
+        <div class="bd">${d.la_thu_muc ? `<span class="badge b-info">Thư mục · ${d.so_con} hồ sơ</span>` : d.trang_thai ? badge(d.trang_thai) : '<span class="badge">Chưa phân tích</span>'}
+          ${d.dong ? (d.dong_moi ? `<span class="badge b-warn">Dòng mới ${d.dong}</span>` : `<span class="badge">Dòng ${d.dong}</span>`) : ''}
+          ${d.cu ? '<span class="badge b-warn">Có thay đổi</span>' : ''}
+          ${d.can_nhap ? `<span class="badge b-warn">${d.can_nhap} cần nhập</span>` : ''}
+          ${d.de_xuat ? `<span class="badge b-info">${d.de_xuat} đề xuất</span>` : ''}</div>
+      </div>
+    </div>`).join('');
+  veChon();
+}
+
+// ====================== Chọn nhiều hồ sơ (Ctrl / Shift / kéo chuột bôi đen) ======================
+let SEL = new Set(), NEO = null, KEO = null;   // SEL: rel đang chọn; NEO: mốc cho Shift; KEO: đang kéo chuột bôi đen
+const thuTu = () => locDs().map(x => x.i);    // thứ tự các hồ sơ đang hiện (theo bộ lọc)
+function dsChon() { const hien = new Set(thuTu()); return DS.filter((d, i) => SEL.has(d.rel) && hien.has(i)); }
+function chonVung(a, b, giu) {
+  const t = thuTu(); let x = t.indexOf(a), y = t.indexOf(b); if (x < 0 || y < 0) return;
+  if (x > y) [x, y] = [y, x];
+  SEL = new Set([...(giu || []), ...t.slice(x, y + 1).map(i => DS[i].rel)]);
+}
+function veChon() {
+  SEL = new Set([...SEL].filter(r => DS.some(d => d.rel === r)));
+  document.querySelectorAll('#ds .item').forEach(el => el.classList.toggle('sel', SEL.has(DS[+el.dataset.i].rel)));
+  const n = dsChon().length, bar = $('#selbar'); if (!bar) return;
+  bar.classList.toggle('on', n > 1); $('#selN').textContent = `Đã chọn ${n} hồ sơ`;
+}
+function boChonNhieu() { SEL = new Set(CUR ? [CUR.rel] : []); veChon(); }
+(() => {
+  const L = $('#ds');
+  L.addEventListener('mousedown', e => {
+    const it = e.target.closest('.item'); if (!it || e.button !== 0) return;
+    KEO = { i: +it.dataset.i, keo: false, giu: (e.ctrlKey || e.metaKey) ? new Set(SEL) : null };
+  });
+  L.addEventListener('mouseover', e => {
+    if (!KEO || !(e.buttons & 1)) return;
+    const it = e.target.closest('.item'); if (!it) return; const i = +it.dataset.i;
+    if (i === KEO.i && !KEO.keo) return;
+    KEO.keo = true; NEO = KEO.i; chonVung(KEO.i, i, KEO.giu); veChon();
+  });
+  document.addEventListener('mouseup', () => setTimeout(() => { KEO = null; }, 0));
+  L.addEventListener('click', e => {
+    const it = e.target.closest('.item'); if (!it) return;
+    if (KEO && KEO.keo) return;                        // vừa kéo bôi đen: không mở hồ sơ
+    const i = +it.dataset.i, rel = DS[i].rel, ctrl = e.ctrlKey || e.metaKey;
+    if (e.shiftKey && NEO != null) { chonVung(NEO, i, ctrl ? SEL : null); veChon(); return; }
+    if (ctrl) { if (!SEL.size && CUR) SEL.add(CUR.rel); if (SEL.has(rel)) SEL.delete(rel); else SEL.add(rel); NEO = i; veChon(); return; }
+    NEO = i; chon(i);
+  });
+  L.addEventListener('contextmenu', e => {
+    const it = e.target.closest('.item'); if (!it) return; const i = +it.dataset.i;
+    if (dsChon().length > 1 && SEL.has(DS[i].rel)) return menuNhieu(e);
+    SEL = new Set([DS[i].rel]); NEO = i; veChon(); menuHoSo(e, i);
+  });
+  document.addEventListener('keydown', e => {
+    if ($('#ctx') || $('#modal').classList.contains('on') || !$('#hoso').classList.contains('on')) return;
+    if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable]')) return;
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'a') { e.preventDefault(); SEL = new Set(thuTu().map(i => DS[i].rel)); veChon(); }
+    else if (e.key === 'Delete' && dsChon().length) { e.preventDefault(); xoaHoSo(dsChon()); }
+    else if (e.key === 'Escape' && SEL.size > 1) boChonNhieu();
+  });
+})();
+function menuNhieu(e) {
+  e.preventDefault(); e.stopPropagation();
+  const ds = dsChon(), n = ds.length, khoKhac = KHO.filter(k => k.ton_tai && !cungDuongDan(k.rel, chaHienTai()));
+  moMenu(e.clientX, e.clientY, [
+    { label: `Phân tích lại ${n} hồ sơ`, fn: () => phanTichNhieu(ds) },
+    { label: khoKhac.length ? `Chuyển ${n} hồ sơ sang kho khác…` : 'Chuyển sang kho khác (chưa có kho khác)', disabled: !khoKhac.length, fn: () => chuyenKho(ds, khoKhac) },
+    { label: 'Bỏ chọn', fn: boChonNhieu },
+    { sep: true },
+    { label: `Xóa ${n} hồ sơ…`, bad: true, fn: () => xoaHoSo(ds) },
+  ]);
+}
+function chuyenNhieu() {
+  const khoKhac = KHO.filter(k => k.ton_tai && !cungDuongDan(k.rel, chaHienTai()));
+  if (!khoKhac.length) return toast('Chưa có kho khác. Tạo kho mới bằng nút ⋯ cạnh ô Kho hồ sơ.', 'warn');
+  chuyenKho(dsChon(), khoKhac);
+}
+// Chạy một thao tác lần lượt trên nhiều hồ sơ, hiện tiến độ; trả { ok, loi }
+async function chayLoat(list, fn, nhan) {
+  const ok = [], loi = [];
+  try {
+    for (let k = 0; k < list.length; k++) {
+      busy(true, `${nhan}… ${k + 1}/${list.length}`, list[k].dn || list[k].ten);
+      try { await fn(list[k]); ok.push(list[k]); } catch (e) { loi.push({ d: list[k], loi: e.message }); }
+    }
+  } finally { busy(false); }
+  return { ok, loi };
+}
+function baoLoiLoat(loi, tieuDe) {
+  if (!loi.length) return;
+  return hoi({ tieuDe, rong: 'w', noiDung: `<ul class="plain">${loi.map(x => `<li><b>${esc(x.d.dn || x.d.ten)}</b> <span style="color:var(--muted)">(${esc(x.d.ten)})</span>: ${esc(x.loi)}</li>`).join('')}</ul>`, nut: [{ id: 'ok', label: 'Đóng', pri: true }] });
+}
+async function phanTichNhieu(list) {
+  list = arr(list); if (!list.length) return;
+  const { ok, loi } = await chayLoat(list, d => fetchJson('/api/phan-tich', { rel: d.rel }), 'Đang phân tích lại');
+  const giu = CUR ? CUR.rel : null; await taiDs();
+  if (giu && ok.some(d => d.rel === giu)) { const i = DS.findIndex(d => d.rel === giu); if (i >= 0) await chon(i); }
+  if (ok.length) toast(`Đã phân tích lại ${ok.length} hồ sơ.`, 'ok');
+  await baoLoiLoat(loi, `${loi.length} hồ sơ không phân tích được`);
+}
+// ====================== Kho hồ sơ ======================
+function veKho() {
+  const cha = chaHienTai(), sel = $('#kho'); if (!sel) return;
+  const co = KHO.some(k => cungDuongDan(k.rel, cha));
+  sel.innerHTML = KHO.map(k => `<option value="${esc(k.rel)}" ${cungDuongDan(k.rel, cha) ? 'selected' : ''}>${esc(k.ten)}${k.ton_tai ? ` (${k.so_ho_so})` : ' – không thấy thư mục'}</option>`).join('')
+    + (co ? '' : `<option value="${esc(cha)}" selected>Thư mục: ${esc(cha || '(gốc dự án)')}</option>`);
+  sel.title = 'Thư mục: ' + (cha || '(gốc dự án)');
+}
+function boChon() { CUR = null; PT = null; $('#ct').innerHTML = '<div class="empty"><b>Chưa chọn hồ sơ</b>Chọn một hồ sơ ở danh sách bên trái để xem phân tích, đề xuất ghi Excel và đổi tên văn bản.</div>'; }
+async function doiKho(rel) { $('#cha').value = rel; boChon(); TK_INIT = false; TKCHON.clear(); await taiDs(); }
+async function khoApi(body, msg) {
+  try { const r = await api('/api/kho', body, 'Đang cập nhật kho…'); KHO = arr(r.ds); veKho(); if (msg) toast(msg, 'ok'); return r; } catch (e) { bao(e); return null; }
+}
+function menuKho(e) {
+  e.stopPropagation();
+  const b = e.currentTarget.getBoundingClientRect(), cha = chaHienTai(), k = KHO.find(x => cungDuongDan(x.rel, cha));
+  moMenu(b.left, b.bottom + 4, [
+    { label: 'Tạo kho mới…', fn: taoKho },
+    { label: 'Đổi tên hiển thị của kho…', disabled: !k, fn: () => doiTenKho(k) },
+    { label: 'Thêm thư mục đang xem làm kho', disabled: !!k || !cha, fn: () => khoApi({ hanh_dong: 'them', rel: cha }, 'Đã thêm vào danh sách kho.') },
+    { label: 'Mở thư mục kho trong Explorer', disabled: !cha, fn: () => api('/api/mo', { rel: cha }).catch(bao) },
+    { sep: true },
+    { label: 'Gỡ kho khỏi danh sách…', disabled: !k, bad: true, fn: () => goKho(k) },
+  ]);
+}
+async function taoKho() {
+  const r = await hoi({ tieuDe: 'Tạo kho hồ sơ mới',
+    noiDung: '<p style="color:var(--muted)">Kho là một thư mục trong dự án chứa một nhóm hồ sơ riêng, ví dụ theo năm hoặc theo cán bộ. Mọi kho dùng chung file Excel tổng hợp.</p>',
+    inputs: [{ id: 'ten', label: 'Tên kho (cũng là tên thư mục)', placeholder: 'Ví dụ: Hồ sơ ABTC 2027' }],
+    nut: [{ id: 'ok', label: 'Tạo kho', pri: true }, { id: 'huy', label: 'Hủy' }] });
+  if (!r || r.nut !== 'ok') return; const ten = (r.values.ten || '').trim(); if (!ten) return;
+  const k = await khoApi({ hanh_dong: 'tao', ten }, `Đã tạo kho "${ten}". Kéo folder hồ sơ vào để thêm hồ sơ.`);
+  if (k && k.rel) await doiKho(k.rel);
+}
+async function doiTenKho(k) {
+  const r = await hoi({ tieuDe: 'Đổi tên hiển thị của kho', noiDung: `<p style="color:var(--muted)">Chỉ đổi tên hiện trong danh sách, thư mục <code>${esc(k.rel)}</code> giữ nguyên.</p>`,
+    inputs: [{ id: 'ten', label: 'Tên hiển thị', value: k.ten }], nut: [{ id: 'ok', label: 'Lưu', pri: true }, { id: 'huy', label: 'Hủy' }] });
+  if (!r || r.nut !== 'ok' || !(r.values.ten || '').trim()) return;
+  await khoApi({ hanh_dong: 'doi-ten', rel: k.rel, ten: r.values.ten.trim() }, 'Đã đổi tên kho.');
+}
+async function goKho(k) {
+  if (!await xacNhan('Gỡ kho khỏi danh sách', `<p>Gỡ <b>${esc(k.ten)}</b> khỏi danh sách kho?</p><p style="color:var(--muted)">Thư mục <code>${esc(k.rel)}</code> và các hồ sơ bên trong <b>không bị xóa</b>. Có thể thêm lại sau.</p>`, 'Gỡ khỏi danh sách', true)) return;
+  if (!await khoApi({ hanh_dong: 'go', rel: k.rel }, 'Đã gỡ kho khỏi danh sách.')) return;
+  if (cungDuongDan(k.rel, chaHienTai())) { const kh = KHO.find(x => x.ton_tai); if (kh) await doiKho(kh.rel); }
+}
+
+// ====================== Menu chuột phải ======================
+function moMenu(x, y, items) {
+  dongMenu();
+  const m = document.createElement('div'); m.id = 'ctx'; m.className = 'ctx';
+  m.innerHTML = items.map((it, i) => it.sep ? '<div class="sep"></div>' : `<button data-i="${i}" class="${it.bad ? 'bad' : ''}" ${it.disabled ? 'disabled' : ''}>${esc(it.label)}</button>`).join('');
+  m.addEventListener('click', e => e.stopPropagation());
+  m.addEventListener('contextmenu', e => e.preventDefault());
+  document.body.appendChild(m);
+  const r = m.getBoundingClientRect();
+  m.style.left = Math.max(4, Math.min(x, innerWidth - r.width - 6)) + 'px'; m.style.top = Math.max(4, Math.min(y, innerHeight - r.height - 6)) + 'px';
+  m.querySelectorAll('button').forEach(b => b.onclick = () => { dongMenu(); items[+b.dataset.i].fn(); });
+  const f = m.querySelector('button:not([disabled])'); if (f) f.focus();
+}
+function dongMenu() { const m = $('#ctx'); if (m) m.remove(); }
+document.addEventListener('click', dongMenu);
+document.addEventListener('scroll', dongMenu, true);
+window.addEventListener('blur', dongMenu); window.addEventListener('resize', dongMenu);
+document.addEventListener('keydown', e => {
+  const m = $('#ctx'); if (!m) return;
+  if (e.key === 'Escape') { dongMenu(); return; }
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); const bs = [...m.querySelectorAll('button:not([disabled])')]; const i = bs.indexOf(document.activeElement); bs[(i + (e.key === 'ArrowDown' ? 1 : bs.length - 1)) % bs.length].focus(); }
+});
+function menuHoSo(e, i) {
+  e.preventDefault(); e.stopPropagation();
+  const d = DS[i], cha = chaHienTai();
+  const khoKhac = KHO.filter(k => k.ton_tai && !cungDuongDan(k.rel, cha) && !cungDuongDan(k.rel, d.rel));
+  moMenu(e.clientX, e.clientY, [
+    { label: 'Mở hồ sơ', fn: () => chon(i) },
+    { label: 'Phân tích lại', fn: async () => { await chon(i); if (CUR && CUR.rel === d.rel) await phanTichLai(); } },
+    { label: 'Mở folder trong Explorer', fn: () => api('/api/mo', { rel: d.rel }).catch(bao) },
+    { label: 'Sao chép đường dẫn', fn: () => saoChepDuongDan((TQ.goc || '') + '\\' + d.rel) },
+    { sep: true },
+    { label: 'Đổi tên folder…', fn: async () => { await chon(i); if (CUR && CUR.rel === d.rel && PT) doiTenFolder(); } },
+    { label: khoKhac.length ? 'Chuyển sang kho khác…' : 'Chuyển sang kho khác (chưa có kho khác)', disabled: !khoKhac.length, fn: () => chuyenKho(d, khoKhac) },
+    { sep: true },
+    { label: 'Xóa hồ sơ…', bad: true, fn: () => xoaHoSo(d) },
+  ]);
+}
+async function saoChepDuongDan(p) {
+  try { await navigator.clipboard.writeText(p); toast('Đã sao chép đường dẫn.', 'ok'); }
+  catch { await hoi({ tieuDe: 'Đường dẫn folder', inputs: [{ id: 'p', label: 'Bấm Ctrl+C để sao chép', value: p }], nut: [{ id: 'ok', label: 'Đóng', pri: true }] }); }
+}
+// Danh sách hồ sơ (dùng trong hộp xác nhận khi thao tác nhiều hồ sơ)
+const htmlDsHoSo = list => `<div class="dy-ds" style="height:auto;max-height:28vh;margin:8px 0">${list.map(d => `<div class="dy-row" style="cursor:default"><span class="t">${esc(d.dn || d.ten)} <span style="color:var(--muted)">– ${esc(d.ten)}</span></span>${d.dong && !d.dong_moi ? `<span class="badge">Dòng ${d.dong}</span>` : ''}</div>`).join('')}</div>`;
+async function chuyenKho(list, ds) {
+  list = arr(list); const n = list.length; if (!n) return;
+  let chonRel = ds[0].rel;
+  const r = await hoi({ tieuDe: n > 1 ? `Chuyển ${n} hồ sơ sang kho khác` : 'Chuyển hồ sơ sang kho khác', rong: n > 1 ? 'w' : '',
+    noiDung: `<p>Chuyển ${n > 1 ? `<b>${n} hồ sơ</b>${htmlDsHoSo(list)}` : `folder <b>${esc(list[0].ten)}</b>`} sang:</p><div class="dy-ds" style="height:auto;max-height:40vh">${ds.map((k, j) => `<label class="dy-row"><input type="radio" name="khodich" value="${j}" ${j ? '' : 'checked'}><span class="t">${esc(k.ten)}</span><span class="badge">${k.so_ho_so} hồ sơ</span></label>`).join('')}</div>
+      <p style="color:var(--muted)">Dữ liệu đã đọc (chữ PDF, OCR, nhập tay) đi theo hồ sơ. Đóng các file trong folder trước khi chuyển.</p>`,
+    nut: [{ id: 'ok', label: 'Chuyển', pri: true }, { id: 'huy', label: 'Hủy' }],
+    sauKhiMo: box => box.querySelectorAll('input[name=khodich]').forEach(x => x.onchange = () => { chonRel = ds[+x.value].rel; }) });
+  if (!r || r.nut !== 'ok') return;
+  const tenKho = (ds.find(k => k.rel === chonRel) || {}).ten;
+  const { ok, loi } = await chayLoat(list, d => fetchJson('/api/chuyen-kho', { rel: d.rel, kho: chonRel }), 'Đang chuyển hồ sơ');
+  if (CUR && ok.some(d => d.rel === CUR.rel)) boChon();
+  ok.forEach(d => SEL.delete(d.rel));
+  try { KHO = arr((await fetchJson('/api/kho')).ds); } catch {}
+  await taiDs();
+  if (ok.length) toast(ok.length === 1 ? `Đã chuyển "${ok[0].ten}" sang kho "${tenKho}".` : `Đã chuyển ${ok.length} hồ sơ sang kho "${tenKho}".`, 'ok');
+  await baoLoiLoat(loi, `${loi.length} hồ sơ không chuyển được`);
+}
+async function xoaHoSo(list) {
+  list = arr(list); const n = list.length; if (!n) return;
+  const coDong = list.filter(d => d.dong && !d.dong_moi);
+  const dongTxt = coDong.length ? `<li>Không sửa file Excel tổng hợp – <b>dòng ${coDong.map(d => d.dong).join(', ')}</b> vẫn còn, tự xóa trong Excel nếu cần.</li>` : '<li>Không sửa file Excel tổng hợp.</li>';
+  const dau = n === 1 ? `<p>Chuyển folder <b>${esc(list[0].dn || list[0].ten)}</b> <span style="color:var(--muted)">(${esc(list[0].ten)}, ${list[0].so_file} tệp)</span> vào <b>Thùng rác</b> của Windows?</p>`
+    : `<p>Chuyển <b>${n} hồ sơ</b> sau vào <b>Thùng rác</b> của Windows?</p>${htmlDsHoSo(list)}`;
+  const tieuDe = n === 1 ? 'Xóa hồ sơ' : `Xóa ${n} hồ sơ`;
+  if (!await xacNhan(tieuDe, `${dau}<ul class="plain"><li>Xóa nhầm thì khôi phục từ Thùng rác.</li><li>Dữ liệu đã đọc (chữ PDF, OCR, giá trị nhập tay) được cất vào <code>_HE_THONG\\_luu_tru\\cache_da_xoa</code>.</li>${dongTxt}</ul>`, tieuDe, true)) return;
+  // Thư mục chứa nhiều hồ sơ: máy chủ từ chối lần đầu và trả danh sách hồ sơ con → hỏi xác nhận riêng (gõ XOA) rồi xóa cả thư mục
+  const chua = [];
+  let { ok, loi } = await chayLoat(list, async d => {
+    try { await fetchJson('/api/xoa-ho-so', { rel: d.rel }); }
+    catch (e) { if (e.data && e.data.thu_muc_chua) { chua.push({ d, con: arr(e.data.con) }); return; } throw e; }
+  }, 'Đang chuyển vào Thùng rác');
+  ok = ok.filter(d => !chua.some(x => x.d === d));
+  for (const { d, con } of chua) {
+    const r = await hoi({ tieuDe: 'Xóa thư mục chứa nhiều hồ sơ', rong: 'w',
+      noiDung: `<p><b>${esc(d.ten)}</b> không phải một hồ sơ mà là thư mục chứa <b>${con.length} hồ sơ</b>:</p>
+        <div class="dy-ds" style="height:auto;max-height:28vh;margin:8px 0">${con.map(t => `<div class="dy-row" style="cursor:default">${I.fold}<span class="t">${esc(t)}</span></div>`).join('')}</div>
+        <p>Cả thư mục và mọi hồ sơ bên trong sẽ vào <b>Thùng rác</b> (khôi phục được). Dữ liệu đã đọc của từng hồ sơ được cất vào <code>_HE_THONG\\_luu_tru\\cache_da_xoa</code>.</p>`,
+      inputs: [{ id: 'xn', label: 'Gõ XOA để xác nhận', placeholder: 'XOA' }],
+      nut: [{ id: 'ok', label: `Xóa cả ${con.length} hồ sơ`, bad: true }, { id: 'huy', label: 'Hủy' }] });
+    if (!r || r.nut !== 'ok') continue;
+    if ((r.values.xn || '').trim().toUpperCase() !== 'XOA') { toast(`Chưa gõ đúng "XOA" – không xóa "${d.ten}".`, 'warn'); continue; }
+    const k = await chayLoat([d], x => fetchJson('/api/xoa-ho-so', { rel: x.rel, ca_thu_muc: true }), 'Đang chuyển vào Thùng rác');
+    ok = ok.concat(k.ok); loi = loi.concat(k.loi);
+  }
+  for (const d of ok) {
+    if (CUR && CUR.rel === d.rel) boChon();
+    if (cungDuongDan(d.rel, chaHienTai())) $('#cha').value = d.rel.includes('\\') ? d.rel.slice(0, d.rel.lastIndexOf('\\')) : '';
+    TKCHON.delete(d.rel); SEL.delete(d.rel);
+  }
+  try { KHO = arr((await fetchJson('/api/kho')).ds); } catch {}
+  await taiDs();
+  if (ok.length) toast(ok.length === 1 ? `Đã chuyển "${ok[0].ten}" vào Thùng rác.` : `Đã chuyển ${ok.length} hồ sơ vào Thùng rác.`, 'ok');
+  await baoLoiLoat(loi, `${loi.length} hồ sơ không xóa được`);
+}
+
+async function quetTatCa() {
+  const nCu = DS.filter(d => d.cu || !d.trang_thai).length;
+  const r = await hoi({ tieuDe: 'Quét hồ sơ và cập nhật trạng thái',
+    noiDung: `<p>Đọc các file mới hoặc đã đổi trong từng folder (chữ PDF bằng Word, OCR số/ngày) rồi phân tích lại để cập nhật trạng thái, dòng Excel và đề xuất ghi.</p>
+      <p>${nCu ? `Có <b>${nCu}</b> hồ sơ có thay đổi hoặc chưa phân tích.` : 'Không phát hiện hồ sơ nào có file mới. Vẫn có thể quét lại tất cả.'}</p><p style="color:var(--muted)">Quét tất cả ${DS.length} hồ sơ chỉ đọc lại file mới nên thường nhanh; chỉ chậm khi có nhiều PDF mới.</p>`,
+    nut: [{ id: 'cu', label: nCu ? `Quét ${nCu} hồ sơ có thay đổi` : 'Không có gì để quét', pri: !!nCu }, { id: 'all', label: `Quét lại tất cả (${DS.length})`, pri: !nCu }, { id: 'huy', label: 'Hủy' }] });
+  if (!r || r.nut === 'huy' || (r.nut === 'cu' && !nCu)) return;
+  try {
+    const k = await api('/api/quet', { cha: $('#cha').value, tat_ca: r.nut === 'all' }, 'Đang quét các hồ sơ…', 'Đọc PDF bằng Word, OCR ảnh đầu trang, phân tích lại. Có thể mất vài phút nếu nhiều file mới.');
+    const ds = arr(k.ds); const doi = ds.filter(x => !x.loi && x.truoc !== x.sau), loi = ds.filter(x => x.loi);
+    await taiDs(); if (CUR) { const i = DS.findIndex(d => d.rel === CUR.rel); if (i >= 0) await chon(i); }
+    if (!ds.length) return toast('Không có hồ sơ nào cần quét.', 'info');
+    await hoi({ tieuDe: `Đã quét ${ds.length} hồ sơ`, rong: 'w',
+      noiDung: `<p>${doi.length} hồ sơ đổi trạng thái${loi.length ? `, <span style="color:var(--bad)">${loi.length} lỗi</span>` : ''}.</p>
+        <table><thead><tr><th>Hồ sơ</th><th>Trạng thái trước</th><th></th><th>Trạng thái sau</th><th class="nw">Đề xuất</th><th class="nw">Cần nhập</th></tr></thead><tbody>${ds.map(x => `<tr class="${x.loi ? 'need' : ''}">
+          <td><b>${esc(x.dn || x.ten)}</b><div style="color:var(--muted);font-size:12px">${esc(x.ten)}</div>${x.loi ? `<div style="color:var(--bad);font-size:12px">${esc(x.loi)}</div>` : ''}</td>
+          <td>${x.truoc ? badge(x.truoc) : '<span class="badge">Chưa phân tích</span>'}</td><td style="color:var(--muted-2)">${x.truoc !== x.sau ? '→' : '='}</td><td>${x.sau ? badge(x.sau) : ''}</td>
+          <td class="nw">${x.de_xuat ? `<span class="badge b-info">${x.de_xuat}</span>` : ''}</td><td class="nw">${x.can_nhap ? `<span class="badge b-warn">${x.can_nhap}</span>` : ''}</td></tr>`).join('')}</tbody></table>`,
+      nut: [{ id: 'ok', label: 'Đóng', pri: true }] });
+  } catch (e) { bao(e); }
+}
+async function chon(i) {
+  // Thư mục gom nhiều hồ sơ (vd "Kho C"): mở vào bên trong thay vì phân tích như một hồ sơ
+  if (DS[i] && DS[i].la_thu_muc) { $('#cha').value = DS[i].rel; boChon(); await taiDs(); return toast(`Đang xem thư mục "${DS.length ? chaHienTai().split('\\').pop() : ''}": ${DS.length} hồ sơ. Chọn lại kho ở ô "Kho hồ sơ" để quay ra.`, 'info'); }
+  CUR = DS[i]; SEL = new Set([CUR.rel]); NEO = i; MO = new Set(); DOI_TEN = -1; veDs();
+  try { PT = await api('/api/phan-tich?rel=' + encodeURIComponent(CUR.rel), undefined, 'Đang tải hồ sơ…', CUR.cu ? 'Folder có thay đổi – phân tích lại' : ''); veCt(); capNhatDs(); } catch (e) { bao(e); }
+}
+async function phanTichLai() { try { PT = await api('/api/phan-tich', { rel: CUR.rel }, 'Đang phân tích lại…', 'Chỉ đọc lại file mới hoặc đã đổi'); veCt(); capNhatDs(); toast('Đã phân tích lại.', 'ok'); } catch (e) { bao(e); } }
+function capNhatDs() {
+  const d = DS.find(x => x.rel === CUR.rel); if (!d || !PT) return;
+  d.trang_thai = PT.trang_thai; d.dn = PT.ten_viet_tat; d.dong = PT.dong_ghi; d.dong_moi = !PT.dong_excel_hien_co; d.cu = false; d.da_chuan_bi = true;
+  d.can_nhap = arr(PT.van_ban).filter(v => v.can_nhap).length; d.de_xuat = arr(PT.de_xuat).filter(x => x.chon).length; d.ten_chuan = arr(PT.van_ban).filter(v => v.ten_goi_y).length;
+  veDs();
+}
+
+// ====================== Chi tiết hồ sơ ======================
+function veSteps(tt) {
+  const k = ttKey(tt) || 'S0_MOI';
+  const steps = [['S0', 'Tiếp nhận'], ['S3', 'Xin ý kiến LN'], ['S5', 'Đủ ý kiến LN'], ['S5b', 'Trình BGĐ Sở'], ['S6', 'Trình UB'], ['S7', 'Kết quả UB']];
+  const pos = { S0_MOI: 0, S1_CHO_BO_SUNG: 0, S2_DA_BO_SUNG: 0, S3_XIN_Y_KIEN_LN: 1, S4_DON_DOC_LN: 1, S5_DU_Y_KIEN_LN: 2, S5b_DANG_TRINH_SO: 3, S6_DA_TRINH_UB: 4, S7_UB_CHO_PHEP: 5, S8_UB_KHONG_CHO_PHEP: 5, S9_TRA_HO_SO: 5, S10_DN_RUT: 5 }[k];
+  const cuoi = { S7_UB_CHO_PHEP: ['ok', 'UB cho phép'], S8_UB_KHONG_CHO_PHEP: ['bad', 'UB không cho phép'], S9_TRA_HO_SO: ['bad', 'Trả hồ sơ'], S10_DN_RUT: ['bad', 'DN rút hồ sơ'] }[k];
+  return '<div class="steps">' + steps.map(([id, t], i) => {
+    let cls = i < pos ? 'done' : i === pos ? 'cur' : ''; let label = t;
+    if (i === pos && !cuoi) label = TT[k][0];
+    if (i === 5 && cuoi) { cls = cuoi[0]; label = cuoi[1]; }
+    return `<div class="step ${cls}"><div class="c">${cls === 'done' || cls === 'ok' ? '✓' : cls === 'bad' ? '!' : i + 1}</div>${esc(label)}</div>`;
+  }).join('') + '</div>';
+}
+function veCt() {
+  const p = PT; if (!p) return;
+  const tay = arr(p.nhap_tay_ho_so);
+  const vt = (f, html) => tay.includes(f) ? html + ' <span class="badge b-src" title="Giá trị nhập tay">nhập tay</span>' : html;
+  const nguoi = arr(p.ds_ca_nhan).map(n => {
+    const ns = n.ngay_sinh ? Object.entries(n.ngay_sinh) : []; const lech = new Set(ns.map(x => x[1])).size > 1;
+    return `<tr class="${lech ? 'need' : ''}"><td>${esc(n.ho_ten)}</td><td>${esc(n.chuc_vu)}${(n.cccd || n.ho_chieu) ? `<div style="color:var(--muted);font-size:12px">${n.cccd ? "CCCD " + esc(n.cccd) : ""}${n.ho_chieu ? " · Hộ chiếu " + esc(n.ho_chieu) + (n.ho_chieu_cap ? " cấp " + esc(n.ho_chieu_cap) : "") + (n.ho_chieu_het_han ? ", hết hạn " + esc(n.ho_chieu_het_han) : "") : ""}</div>` : ""}</td><td>${ns.map(([k, v]) => `<span class="nw">${esc(v)}</span> <span class="muted" style="color:var(--muted-2)">(${esc(k)})</span>`).join('<br>')}${lech ? ' <span class="badge b-warn">lệch</span>' : ''}</td></tr>`; }).join('');
+  const hoi = arr(p.co_quan_duoc_hoi);
+  const lnBox = Object.keys(LN).map(k => { const x = (p.ln || {})[k] || {};
+    const st = x.co ? '<span class="badge b-ok">✓ đã trả lời</span>' : hoi.includes(k) ? '<span class="badge b-warn">chưa có</span>' : '<span class="badge">không hỏi</span>';
+    return `<div><div class="h"><b>${LN[k]}</b>${st}</div><div class="so">${esc(x.so || '')}${x.ngay ? ' <span style="color:var(--muted)">– ' + esc(x.ngay) + '</span>' : ''}</div><div class="kl" title="${esc(x.co ? x.ket_luan : '')}">${esc(x.co ? x.ket_luan : '')}</div></div>`; }).join('');
+  const vb = arr(p.van_ban).map((v, i) => {
+    const mo = MO.has(i) || v.can_nhap;
+    const tenCell = DOI_TEN === i
+      ? `<div class="row"><input class="inp sm" id="dt${i}" value="${esc(tenTep(v.file))}" onkeydown="if(event.key==='Enter')luuDoiTen(${i});if(event.key==='Escape')huyDoiTen()" style="min-width:260px"><button class="btn sm pri" onclick="luuDoiTen(${i})">Lưu</button><button class="btn sm" onclick="huyDoiTen()">Hủy</button></div>`
+      : `<div class="fname"><span class="nm">${thuMucTep(v.file) ? `<span style="color:var(--muted-2);font-weight:400">${esc(thuMucTep(v.file))} › </span>` : ''}${esc(tenTep(v.file))}</span><button class="btn ghost ic sm" title="Đổi tên file" onclick="moDoiTen(${i})">${I.pen}</button></div>
+         ${v.ten_goi_y ? `<div class="goiy">→ <code>${esc(v.ten_goi_y)}</code><button class="link" onclick="doiTenChuan(${i})">đặt tên chuẩn</button></div>` : ''}`;
+    const soCell = mo ? `<div class="row"><input class="inp sm" id="so${i}" value="${esc(v.so || (v.so_ky_hieu || '').split('/')[0])}" placeholder="số" style="width:70px;flex:none"><span style="color:var(--muted-2)">/</span><input class="inp sm" id="kh${i}" value="${esc(v.ky_hieu || '')}" placeholder="ký hiệu" style="width:110px;flex:none"></div>` : esc(v.so_ky_hieu);
+    const ngayCell = mo ? `<input class="inp sm" id="ng${i}" value="${esc(v.ngay)}" placeholder="dd/mm/yyyy" style="width:105px">` : esc(v.ngay);
+    const loai = String(v.loai || ''); const loaiTxt = LOAI[loai] || loai;
+    return `<tr class="${v.can_nhap ? 'need' : ''} ${/^(TRUNG|DU_THAO|DN_HO_SO_KEM|KHAC)/.test(loai) ? 'off' : ''}">
+      <td>${tenCell}</td><td class="nw" title="${esc(loai)}">${esc(loaiTxt)}${loai.includes('(') ? ' <span class="badge b-warn">DN khác</span>' : ''}</td><td class="nw">${esc(v.co_quan)}</td>
+      <td class="nw">${soCell}</td><td class="nw">${ngayCell}</td><td class="nw">${srcBadge(v.nguon_so)}</td>
+      <td class="acts-td">${v.anh && !/^LỖI/.test(v.anh) ? `<button class="btn sm" title="Xem ảnh đầu trang" onclick="xemAnh(${i})">${I.img} Ảnh</button>` : ''}
+        ${mo ? `<button class="btn sm pri" onclick="luuTay(${i})">Lưu</button>${v.can_nhap ? '' : `<button class="btn sm" onclick="dongSua(${i})">Hủy</button>`}` : `<button class="btn ghost ic sm" title="Sửa số / ký hiệu / ngày" onclick="moSua(${i})">${I.pen}</button>`}</td></tr>`; }).join('');
+  const soTenChuan = arr(p.van_ban).filter(v => v.ten_goi_y).length;
+  const dx = arr(p.de_xuat).map((d, i) => `<tr class="${d.chon ? 'sel' : ''}" id="dxr${i}">
+      <td style="width:28px"><input type="checkbox" id="dx${i}" ${d.chon ? 'checked' : ''} onchange="document.getElementById('dxr${i}').classList.toggle('sel',this.checked);demDx()"></td><td class="nw"><b>${esc(d.o)}</b></td>
+      <td style="max-width:260px;color:var(--muted)">${esc(d.cu) || '<i style="color:var(--muted-2)">(trống)</i>'}</td>
+      <td><textarea class="inp" id="dxm${i}" rows="${Math.min(5, Math.max(1, String(d.moi || '').split('\n').length))}">${esc(d.moi)}</textarea></td><td style="color:var(--muted);font-size:12.5px">${esc(d.ly_do)}</td></tr>`).join('');
+  const kb = arr(p.khac_biet_voi_excel);
+  const dongTxt = p.dong_excel_hien_co ? `Dòng ${p.dong_excel_hien_co} <span style="color:var(--muted)">(${esc(p.cach_ghep)})</span>` : `<span class="badge b-warn">Dòng mới ${esc(p.dong_ghi)}</span>`;
+  $('#ct').innerHTML = `
+    <div class="hs-head">
+      <div>
+        <h2>${vt('doanh_nghiep', esc(p.doanh_nghiep || p.folder))} ${badge(p.trang_thai)}</h2>
+        <div class="sub">${I.fold.replace('<svg', '<svg style="width:13px;height:13px;vertical-align:-2px"')} ${esc(p.folder)}
+          <span>· Viết tắt: <b>${esc(p.ten_viet_tat || '—')}</b>${tay.includes('ten_viet_tat') ? ' <span class="badge b-src">nhập tay</span>' : ''}</span>
+          <button class="btn ghost sm" onclick="suaHoSo()" title="Sửa tên DN, tên viết tắt, cán bộ thụ lý">${I.pen} Sửa thông tin</button></div>
+      </div>
+      <div class="acts">
+        <button class="btn" onclick="phanTichLai()">${I.ref} Phân tích lại</button>
+        <button class="btn" onclick="doiTenFolder()">${I.pen} Đổi tên folder</button>
+        <button class="btn" onclick="moTep(CUR.rel)">${I.fold} Mở folder</button>
+      </div>
+    </div>
+    <div class="card">${veSteps(p.trang_thai)}
+      <div class="card-b" style="border-top:1px solid var(--line-2)"><div class="grid3">
+        <div class="kv"><span>Văn bản DN</span>${esc(p.so_vb_dn) || '—'} ${p.ngay_vb_dn ? '<span style="color:var(--muted)">ngày ' + esc(p.ngay_vb_dn) + '</span>' : ''}</div>
+        <div class="kv"><span>Ngày nhận</span>${esc(p.ngay_nhan) || '—'}</div>
+        <div class="kv"><span>Cán bộ thụ lý</span>${vt('can_bo', esc(p.can_bo) || '—')}</div>
+        <div class="kv"><span>Số doanh nhân</span>${esc(p.so_luong) || '—'}</div>
+        <div class="kv"><span>Dòng Excel</span>${dongTxt}</div>
+        <div class="kv"><span>Mã số DN</span>${esc(p.ma_so_dn) || '—'}</div>
+        <div class="kv" style="grid-column:1/-1"><span>Địa chỉ</span>${esc(p.dia_chi) || '—'}</div>
+        ${(() => { const t = p.thong_tin_phieu_trinh || {}; const m = [["Giấy chứng nhận ĐKDN", t.gcn_dkdn], ["Lĩnh vực", t.linh_vuc], ["Người đại diện", t.nguoi_dai_dien], ["Số đến", t.so_den], ["Văn bản trình", t.van_ban_trinh]].filter(x => x[1]); return m.map(x => `<div class="kv" style="grid-column:1/-1"><span>${x[0]} <i style="font-weight:400">(phiếu trình)</i></span>${esc(x[1])}</div>`).join(""); })()}
+      </div></div>
+    </div>
+    <div class="card"><div class="card-h"><h3>Doanh nhân</h3><span class="n">${arr(p.ds_ca_nhan).length}</span></div>
+      <div class="card-b p0"><table><thead><tr><th>Họ tên</th><th>Chức vụ</th><th>Ngày sinh theo từng văn bản</th></tr></thead><tbody>${nguoi || '<tr><td colspan=3 style="color:var(--muted)">Chưa nhận diện được – cần nhập tay cột G</td></tr>'}</tbody></table></div></div>
+    <div class="card"><div class="card-h"><h3>Ý kiến liên ngành</h3><span class="n">${arr(hoi).filter(k => (p.ln || {})[k] && p.ln[k].co).length}/${hoi.length}</span></div><div class="card-b"><div class="ln">${lnBox}</div></div></div>
+    <div class="card"><div class="card-h"><h3>Đề xuất ghi vào Excel tổng hợp</h3><span class="n">${arr(p.de_xuat).length}</span>
+        ${dx ? `<div class="acts"><span id="dxdem" style="font-size:12.5px;color:var(--muted)"></span><button class="btn pri sm" onclick="ghi()">Ghi các ô đã chọn</button></div>` : ''}</div>
+      ${dx ? `<div class="card-b p0"><table><thead><tr><th></th><th>Ô</th><th>Hiện có</th><th>Giá trị mới (sửa được)</th><th>Lý do</th></tr></thead><tbody>${dx}</tbody></table></div>
+      <div class="note">Tự sao lưu Excel trước khi ghi; từ chối ghi nếu ô đã bị sửa kể từ lúc phân tích. Đóng file Excel tổng hợp trước khi ghi.</div>`
+      : '<div class="card-b" style="color:var(--muted)">Không có thay đổi nào – Excel đã khớp với văn bản trong folder.</div>'}</div>
+    <div class="card"><div class="card-h"><h3>Cảnh báo</h3><span class="n">${arr(p.canh_bao).length}</span></div>
+      <div class="card-b">${arr(p.canh_bao).length ? '<ul class="plain">' + arr(p.canh_bao).map(w => `<li>${esc(w)}</li>`).join('') + '</ul>' : '<span style="color:var(--muted)">Không có.</span>'}</div></div>
+    ${kb.length ? `<div class="card"><div class="card-h"><h3>Khác biệt với Excel</h3><span class="n">${kb.length}</span><span style="font-size:12.5px;color:var(--muted)">chỉ để tham khảo, không đề xuất ghi</span></div>
+      <div class="card-b"><ul class="plain" style="color:var(--muted)">${kb.map(w => `<li>${esc(w)}</li>`).join('')}</ul></div></div>` : ''}
+    <div class="card"><div class="card-h"><h3>Văn bản trong folder</h3><span class="n">${arr(p.van_ban).length}</span>
+        <div class="acts">${soTenChuan ? `<button class="btn sm" onclick="datTenChuanTatCa()">${I.tag} Đặt tên chuẩn (${soTenChuan} file)</button>` : ''}</div></div>
+      <div class="card-b p0"><table><thead><tr><th>File</th><th>Loại</th><th>Cơ quan</th><th>Số / ký hiệu</th><th>Ngày</th><th>Nguồn</th><th></th></tr></thead><tbody>${vb}</tbody></table></div>
+      <div class="note">Dòng có vạch vàng: chưa đọc được số/ngày – bấm <b>Ảnh</b> để xem phần đầu văn bản rồi nhập và <b>Lưu</b>. Nguồn <b>OCR</b> nên liếc lại ảnh. Tên file dạng <code>LN, CA (6304, 11.8.26).pdf</code> giúp lần sau đọc số/ngày từ tên file, không cần OCR – dùng nút <b>Đặt tên chuẩn</b>.</div></div>`;
+  demDx();
+}
+function demDx() { const el = $('#dxdem'); if (!el || !PT) return; const n = arr(PT.de_xuat).filter((d, i) => ($('#dx' + i) || {}).checked).length; el.textContent = n ? `Sẽ ghi ${n} ô vào dòng ${PT.dong_ghi}` : 'Chưa chọn ô nào'; }
+function xemAnh(i) {
+  const v = arr(PT.van_ban)[i]; const src = `/api/anh?rel=${encodeURIComponent(CUR.rel)}&file=${encodeURIComponent(v.anh)}`;
+  hoi({ tieuDe: v.file, rong: 'w', noiDung: `<img class="pv" src="${src}" onclick="this.classList.toggle('zoom')" alt="Ảnh đầu trang">`, chuThich: 'Bấm vào ảnh để phóng to / thu nhỏ.', nut: [{ id: 'ok', label: 'Đóng' }] });
+}
+function moSua(i) { MO.add(i); veCt(); const f = $('#so' + i); if (f) f.focus(); }
+function dongSua(i) { MO.delete(i); veCt(); }
+async function luuTay(i) {
+  const v = arr(PT.van_ban)[i]; const so = $('#so' + i).value.trim(), ngay = $('#ng' + i).value.trim(), ky_hieu = ($('#kh' + i) || { value: '' }).value.trim();
+  if (ngay && !/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(ngay)) { toast('Ngày phải có dạng dd/mm/yyyy', 'warn'); return; }
+  if (so && !/^\d+$/.test(so)) { toast('Số văn bản chỉ gồm chữ số (ký hiệu nhập ở ô bên cạnh)', 'warn'); return; }
+  try { PT = await api('/api/ghi-tay', { rel: CUR.rel, file: v.file, so, ngay, ky_hieu }, 'Đang lưu và phân tích lại…'); MO.delete(i); veCt(); capNhatDs(); toast('Đã lưu và phân tích lại.', 'ok'); } catch (e) { bao(e); }
+}
+async function ghi() {
+  const ds = arr(PT.de_xuat).map((d, i) => ({ o: d.o, cu: d.cu, moi: $('#dxm' + i).value, on: $('#dx' + i).checked })).filter(x => x.on);
+  if (!ds.length) { toast('Chưa chọn ô nào.', 'warn'); return; }
+  const ok = await hoi({ tieuDe: `Ghi ${ds.length} ô vào Excel tổng hợp`, rong: 'w',
+    noiDung: `<table><thead><tr><th>Ô</th><th>Giá trị mới</th></tr></thead><tbody>${ds.map(x => `<tr><td class="nw"><b>${esc(x.o)}</b></td><td><pre class="plain">${esc(x.moi)}</pre></td></tr>`).join('')}</tbody></table>`,
+    chuThich: 'Đóng file Excel tổng hợp nếu đang mở. Tự sao lưu trước khi ghi.', nut: [{ id: 'ok', label: 'Ghi vào Excel', pri: true }, { id: 'huy', label: 'Hủy' }] });
+  if (!ok || ok.nut !== 'ok') return;
+  try { const r = await api('/api/ghi', { rel: CUR.rel, thay_doi: ds.map(({ o, cu, moi }) => ({ o, cu, moi })) }, 'Đang ghi vào Excel…', 'Sao lưu, kiểm tra ô, ghi, cập nhật nhật ký');
+    PT = r.phan_tich; veCt(); capNhatDs(); toast('Đã ghi ' + ds.length + ' ô. Sao lưu: ' + ((r.log.match(/Đã sao lưu: (.*)/) || ['', ''])[1].split('\\').pop() || '—') + '\nNhật ký thêm ' + r.nhat_ky + ' sự kiện.', 'ok', 8000);
+  } catch (e) { bao(e); }
+}
+
+// ---- Đổi tên file / folder, đặt tên chuẩn, sửa thông tin hồ sơ ----
+function moDoiTen(i) { DOI_TEN = i; veCt(); const f = $('#dt' + i); if (f) { f.focus(); const b = f.value.lastIndexOf('.'); f.setSelectionRange(0, b > 0 ? b : f.value.length); } }
+function huyDoiTen() { DOI_TEN = -1; veCt(); }
+// Hồ sơ có cấu trúc: khóa văn bản là "Thư mục loại VB\tên tệp" → tách để hiển thị / đổi tên tại chỗ
+const tenTep = f => String(f || '').split('\\').pop();
+const thuMucTep = f => { const s = String(f || ''); const i = s.lastIndexOf('\\'); return i > 0 ? s.slice(0, i) : ''; };
+async function luuDoiTen(i) {
+  const v = arr(PT.van_ban)[i]; const ten = $('#dt' + i).value.trim();
+  if (!ten || ten === tenTep(v.file)) { huyDoiTen(); return; }
+  try { const r = await api('/api/doi-ten-tep', { rel: CUR.rel, file: v.file, ten_moi: ten }, 'Đang đổi tên…'); DOI_TEN = -1; PT = r.phan_tich; veCt(); capNhatDs(); toast(`Đã đổi tên thành "${r.file}".`, 'ok'); } catch (e) { bao(e); }
+}
+async function doiTenChuan(i) {
+  const v = arr(PT.van_ban)[i]; if (!v.ten_goi_y) return;
+  try { const r = await api('/api/doi-ten-tep', { rel: CUR.rel, file: v.file, ten_moi: v.ten_goi_y }, 'Đang đổi tên…'); PT = r.phan_tich; veCt(); capNhatDs(); toast(`Đã đổi tên thành "${r.file}".`, 'ok'); } catch (e) { bao(e); }
+}
+async function datTenChuanTatCa() {
+  const ds = arr(PT.van_ban).map((v, i) => ({ v, i })).filter(x => x.v.ten_goi_y);
+  const r = await hoi({ tieuDe: `Đặt tên chuẩn cho ${ds.length} file`, rong: 'w',
+    noiDung: `<p style="color:var(--muted)">Tên mới có số và ngày văn bản để lần sau hệ thống đọc từ tên file, không cần OCR. Sửa trực tiếp tên mới nếu cần.</p>
+      <table><thead><tr><th></th><th>Tên hiện tại</th><th>Tên mới</th></tr></thead><tbody>${ds.map(({ v, i }) => `<tr><td style="width:28px"><input type="checkbox" id="tc${i}" checked></td><td style="color:var(--muted)">${esc(v.file)}</td><td><input class="inp sm" id="tcm${i}" value="${esc(v.ten_goi_y)}"></td></tr>`).join('')}</tbody></table>`,
+    nut: [{ id: 'ok', label: 'Đổi tên các file đã chọn', pri: true }, { id: 'huy', label: 'Hủy' }],
+    sauKhiMo: box => { ds.forEach(({ v, i }) => { const c = box.querySelector('#tc' + i), m = box.querySelector('#tcm' + i); v._chon = () => c.checked; v._moi = () => m.value.trim(); }); } });
+  if (!r || r.nut !== 'ok') return;
+  const list = ds.filter(({ v }) => v._chon && v._chon()).map(({ v }) => ({ file: v.file, ten_moi: v._moi() })).filter(x => x.ten_moi && x.ten_moi !== x.file);
+  if (!list.length) { toast('Không có file nào được chọn.', 'warn'); return; }
+  try { const k = await api('/api/doi-ten-nhieu', { rel: CUR.rel, ds: list }, `Đang đổi tên ${list.length} file…`); PT = k.phan_tich; veCt(); capNhatDs();
+    if (arr(k.ok).length) toast(`Đã đổi tên ${arr(k.ok).length} file.`, 'ok'); if (arr(k.loi).length) toast(arr(k.loi).join('\n'), 'bad', 12000);
+  } catch (e) { bao(e); }
+}
+async function doiTenFolder() {
+  const r = await hoi({ tieuDe: 'Đổi tên folder hồ sơ', noiDung: `<p style="color:var(--muted)">Cache (chữ PDF, ảnh, OCR, giá trị nhập tay) sẽ đi theo tên mới – không phải đọc lại. Đóng các file trong folder trước khi đổi.</p>`,
+    inputs: [{ id: 'ten', label: 'Tên folder mới', value: PT.folder, goiY: PT.folder_goi_y || '' }], nut: [{ id: 'ok', label: 'Đổi tên', pri: true }, { id: 'huy', label: 'Hủy' }] });
+  if (!r || r.nut !== 'ok') return;
+  const ten = (r.values.ten || '').trim(); if (!ten || ten === PT.folder) return;
+  try { const k = await api('/api/doi-ten-folder', { rel: CUR.rel, ten_moi: ten }, 'Đang đổi tên folder…'); toast(`Đã đổi tên folder thành "${ten}".`, 'ok'); await moTheoRel(k.rel); } catch (e) { bao(e); }
+}
+async function suaHoSo() {
+  const tay = arr(PT.nhap_tay_ho_so); const f = (k, nhan) => ({ id: k, label: nhan, value: tay.includes(k) ? PT[k] || '' : '', placeholder: tay.includes(k) ? '' : (PT[k] ? 'Tự nhận diện: ' + PT[k] : 'Chưa nhận diện được') });
+  const r = await hoi({ tieuDe: 'Sửa thông tin hồ sơ', noiDung: '<p style="color:var(--muted)">Để trống ô nào thì dùng giá trị hệ thống tự nhận diện. Giá trị nhập tay được nhớ cho các lần phân tích sau.</p>',
+    inputs: [f('doanh_nghiep', 'Tên doanh nghiệp (đầy đủ)'), f('ten_viet_tat', 'Tên viết tắt'), f('can_bo', 'Cán bộ thụ lý')], nut: [{ id: 'ok', label: 'Lưu', pri: true }, { id: 'huy', label: 'Hủy' }] });
+  if (!r || r.nut !== 'ok') return;
+  try { PT = await api('/api/ghi-tay', { rel: CUR.rel, file: '_ho_so', doanh_nghiep: r.values.doanh_nghiep.trim(), ten_viet_tat: r.values.ten_viet_tat.trim(), can_bo: r.values.can_bo.trim() }, 'Đang lưu và phân tích lại…'); veCt(); capNhatDs(); toast('Đã lưu thông tin hồ sơ.', 'ok'); } catch (e) { bao(e); }
+}
+
+// ====================== Thống kê ======================
+function veTkDs() {
+  if (!TK_INIT && DS.length) { DS.forEach(d => TKCHON.add(d.rel)); TK_INIT = true; }
+  const dem = {}; DS.forEach(d => { const k = ttKey(d.trang_thai) || 'chua'; dem[k] = (dem[k] || 0) + 1; });
+  $('#tktom').innerHTML = Object.entries(dem).map(([k, n]) => `<span class="badge ${TT[k] ? TT[k][1] : ''}">${TT[k] ? TT[k][0] : 'Chưa phân tích'} <b>${n}</b></span>`).join('');
+  $('#tkn').textContent = DS.length ? `${DS.length} hồ sơ trong thư mục đang xem` : '';
+  $('#tkds').innerHTML = DS.length ? '<table><thead><tr><th style="width:28px"></th><th>Hồ sơ</th><th>Trạng thái</th><th>Nguồn dữ liệu</th></tr></thead><tbody>' + DS.map((d, i) =>
+    `<tr><td><input type="checkbox" id="tk${i}" ${TKCHON.has(d.rel) ? 'checked' : ''} onchange="tkChon(${i}, this.checked)"></td>
+     <td>${esc(d.dn || d.ten)}<div style="color:var(--muted);font-size:12px">${esc(d.ten)}</div></td><td>${d.trang_thai ? badge(d.trang_thai) : '<span class="badge">Chưa phân tích</span>'}</td>
+     <td>${d.co_ket_qua_ai ? '<span class="badge b-ok">AI</span>' : '<span class="badge">quy tắc</span>'}</td></tr>`).join('') + '</tbody></table>'
+    : '<div class="empty"><b>Chưa có danh sách</b>Tải danh sách hồ sơ ở tab Hồ sơ trước.</div>';
+}
+function tkChon(i, on) { const d = DS[i]; if (!d) return; if (on) TKCHON.add(d.rel); else TKCHON.delete(d.rel); }
+function chonHet(v) { DS.forEach(d => v ? TKCHON.add(d.rel) : TKCHON.delete(d.rel)); veTkDs(); }
+async function lapThongKe() {
+  const rels = DS.filter(d => TKCHON.has(d.rel)).map(d => d.rel);
+  if (!rels.length) { toast('Chưa chọn hồ sơ nào.', 'warn'); return; }
+  try { const r = await api('/api/thong-ke', { rels }, `Đang lập thống kê ${rels.length} hồ sơ…`, 'Dựng file Excel bằng Excel COM – có thể mất 1–2 phút');
+    const ten = r.file.split('\\').pop(); TK_FILE = r.file;
+    $('#tkkq').innerHTML = `<span class="badge b-ok">Đã tạo</span> <b>${esc(ten)}</b> <button class="btn sm" onclick="moTep(TK_FILE)">Mở file</button> <button class="btn sm" onclick="moTep('KẾT QUẢ\\\\THỐNG KÊ')">Mở thư mục</button>`;
+    toast('Đã tạo ' + ten, 'ok');
+  } catch (e) { bao(e); }
+}
+async function moTep(rel) { try { await api('/api/mo', { rel }); } catch (e) { bao(e); } }
+
+// ====================== Thêm folder: kéo-thả, chọn folder, dán đường dẫn ======================
+const chaHienTai = () => $('#cha').value.replace(/[\\/]+$/, '');
+const cungDuongDan = (a, b) => a.replace(/[\\/]+$/, '').toLowerCase() === b.replace(/[\\/]+$/, '').toLowerCase();
+function coKeoVao(e) { const t = e.dataTransfer && e.dataTransfer.types; return !!t && Array.from(t).some(x => x === 'Files' || x === 'text/uri-list' || x === 'text/plain'); }
+document.addEventListener('dragenter', e => { if (!coKeoVao(e)) return; e.preventDefault(); $('#dropcha').textContent = chaHienTai() || '(thư mục gốc)'; $('#dropover').classList.add('on'); $('#drop').classList.add('over'); });
+document.addEventListener('dragover', e => { if (!coKeoVao(e)) return; e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; });
+document.addEventListener('dragleave', e => { if (!e.relatedTarget) { $('#dropover').classList.remove('on'); $('#drop').classList.remove('over'); } });
+document.addEventListener('drop', e => { e.preventDefault(); $('#dropover').classList.remove('on'); $('#drop').classList.remove('over'); xuLyDrop(e.dataTransfer); });
+
+async function xuLyDrop(dt) {
+  chuyenTab('hoso');
+  const entries = Array.from(dt.items || []).map(it => it.webkitGetAsEntry && it.webkitGetAsEntry()).filter(Boolean);
+  if (!entries.length) {
+    const txt = dt.getData('text/uri-list') || dt.getData('text/plain');
+    const dong = (txt || '').split(/\r?\n/).map(s => s.trim()).find(s => s && !s.startsWith('#'));
+    if (dong) { $('#dd').value = dong; return nhapDuongDan(); }
+    return toast('Không nhận được folder nào. Hãy kéo một folder từ File Explorer.', 'warn');
+  }
+  const dirs = entries.filter(x => x.isDirectory), files = entries.filter(x => x.isFile);
+  try {
+    if (dirs.length > 1) {
+      // Thả nhiều folder: sao chép hết, phân tích lần lượt, tổng kết một lần (không mở từng hồ sơ)
+      const kq = [];
+      for (let k = 0; k < dirs.length; k++) {
+        busy(true, `Đang đọc folder… ${k + 1}/${dirs.length}`, dirs[k].name);
+        try { kq.push(await themFolderTuTrinhDuyet(dirs[k].name, await docThuMuc(dirs[k], ''), true)); }
+        catch (e) { kq.push({ ten: dirs[k].name, rel: '', ghi: '', loi: e.message, tt: '' }); }
+      }
+      await phanTichKetQua(kq); busy(false);
+      await tongKetThem(kq);
+    } else for (const d of dirs) await themFolderTuTrinhDuyet(d.name, await docThuMuc(d, ''));
+    if (files.length) {
+      const r = await hoi({ tieuDe: 'Thả tệp rời', noiDung: `<p>Bạn thả ${files.length} tệp không nằm trong folder. Nhập tên folder hồ sơ mới để chứa các tệp này:</p>`,
+        inputs: [{ id: 'ten', label: 'Tên folder hồ sơ', value: 'Hồ sơ ' + new Date().toLocaleDateString('vi-VN').replace(/\//g, '.') }], nut: [{ id: 'ok', label: 'Tạo folder', pri: true }, { id: 'huy', label: 'Hủy' }] });
+      if (r && r.nut === 'ok' && r.values.ten.trim()) await themFolderTuTrinhDuyet(r.values.ten.trim(), await Promise.all(files.map(f => layTep(f, ''))));
+    }
+  } catch (e) { bao(e); } finally { busy(false); }
+}
+const docLo = reader => new Promise((res, rej) => reader.readEntries(res, rej));
+const layTep = (entry, prefix) => new Promise((res, rej) => entry.file(f => res({ path: prefix + entry.name, file: f }), rej));
+async function docThuMuc(dir, prefix) {
+  const out = [], reader = dir.createReader();
+  for (;;) {
+    const lo = await docLo(reader); if (!lo.length) break;
+    for (const e of lo) {
+      if (/^(~\$|\.|Thumbs\.db$|desktop\.ini$)/i.test(e.name)) continue;
+      if (e.isDirectory) out.push(...await docThuMuc(e, prefix + e.name + '/')); else out.push(await layTep(e, prefix));
+    }
+  }
+  return out;
+}
+async function guiTep(cha, ten, item, ghiDe) {
+  const q = `cha=${encodeURIComponent(cha)}&folder=${encodeURIComponent(ten)}&file=${encodeURIComponent(item.path)}&ghi_de=${ghiDe ? 1 : 0}`;
+  const r = await fetch('/api/tai-len?' + q, { method: 'POST', body: item.file });
+  const j = await r.json(); if (!r.ok) throw new Error(j.loi || ('Lỗi ' + r.status)); return j;
+}
+async function themFolderTuTrinhDuyet(ten, list, loat) {
+  // loat = true: đang thêm nhiều folder – không hỏi từng folder, không mở hồ sơ; trả { ten, rel, ghi, loi } cho bảng tổng kết
+  if (!list.length) { if (loat) return { ten, rel: '', ghi: '', loi: 'Folder không có tệp nào', tt: '' }; return toast(`Folder "${ten}" không có tệp nào.`, 'warn'); }
+  const cha = chaHienTai();
+  if (loat) {
+    const kq = { moi: 0, trung: 0, khac: 0 }; let rel = '';
+    for (let i = 0; i < list.length; i++) {
+      busy(true, `Đang sao chép "${ten}"…`, `${i + 1}/${list.length}: ${list[i].path}`);
+      const r = await guiTep(cha, ten, list[i], false); rel = r.rel; kq[r.trang_thai] = (kq[r.trang_thai] || 0) + 1;
+    }
+    return { ten, rel, ghi: `${kq.moi} tệp mới, ${kq.trung} tệp đã có${kq.khac ? ', ' + kq.khac + ' tệp khác nội dung (giữ bản trong dự án)' : ''}`, loi: '', tt: '' };
+  }
+  // Dự án đã có folder cùng tên ở chỗ khác → đề nghị mở folder đó thay vì sao chép thêm một bản
+  try {
+    const co = arr(await fetchJson('/api/tim-folder?ten=' + encodeURIComponent(ten))).filter(r => !cungDuongDan(r, (cha ? cha + '\\' : '') + ten));
+    if (co.length) {
+      const r = await hoi({ tieuDe: `Đã có folder "${ten}"`, noiDung: `<p>Trong dự án đã có folder cùng tên tại:</p><ul class="plain">${co.map(x => `<li><code>${esc(x)}</code></li>`).join('')}</ul>`,
+        nut: [{ id: 'mo', label: 'Mở folder có sẵn', pri: true }, { id: 'chep', label: `Sao chép vào "${cha || 'thư mục gốc'}"` }, { id: 'huy', label: 'Hủy' }] });
+      if (!r || r.nut === 'huy') return; if (r.nut === 'mo') return moTheoRel(co[0]);
+    }
+  } catch {}
+  const kq = { moi: 0, trung: 0, ghi_de: 0 }, khac = []; let rel = '';
+  for (let i = 0; i < list.length; i++) {
+    busy(true, `Đang sao chép "${ten}"…`, `${i + 1}/${list.length}: ${list[i].path}`);
+    const r = await guiTep(cha, ten, list[i], false); rel = r.rel;
+    if (r.trang_thai === 'khac') khac.push(list[i]); else kq[r.trang_thai]++;
+  }
+  busy(false);
+  if (khac.length && await xacNhan('Tệp khác nội dung', `<p>${khac.length} tệp đã có trong "${esc(ten)}" nhưng nội dung khác bản vừa thả:</p><ul class="plain">${khac.map(x => `<li><code>${esc(x.path)}</code></li>`).join('')}</ul><p>Ghi đè bằng bản vừa thả?</p>`, 'Ghi đè', true)) {
+    for (let i = 0; i < khac.length; i++) { busy(true, `Đang ghi đè…`, khac[i].path); await guiTep(cha, ten, khac[i], true); kq.ghi_de++; }
+    busy(false);
+  }
+  await xuLySauThem(rel, `Đã thêm "${ten}": ${kq.moi} tệp mới, ${kq.trung} tệp đã có${kq.ghi_de ? ', ' + kq.ghi_de + ' tệp ghi đè' : ''}.`);
+}
+async function xuLySauThem(rel, thongBao) {
+  // Folder vừa thêm là folder tổng (Tháng → Doanh nghiệp → loại VB): phân tích từng hồ sơ bên trong rồi tổng kết
+  try {
+    const tim = await fetchJson('/api/tim-ho-so?rel=' + encodeURIComponent(rel));
+    const ds = arr(tim.ds);
+    if (ds.length > 1 || (ds.length === 1 && !cungDuongDan(ds[0].duong_dan, tim.goc))) {
+      const kq = ds.map(c => ({ ten: c.ten, rel: c.duong_dan.slice(TQ.goc.length + 1), ghi: `${c.so_tep} văn bản${c.nhom ? ' – ' + c.nhom : ''}`, loi: '', tt: '' }));
+      try { await phanTichKetQua(kq); } finally { busy(false); }
+      toast(thongBao, 'ok', 7000); return tongKetThem(kq);
+    }
+  } catch {}
+  try { busy(true, 'Đang chuẩn bị và phân tích hồ sơ…', 'Đọc chữ PDF bằng Word, nhận dạng số văn bản bằng OCR. Có thể mất 1–2 phút với hồ sơ mới.'); await fetchJson('/api/phan-tich', { rel }); }
+  catch (e) { bao(e); } finally { busy(false); }
+  await moTheoRel(rel); toast(thongBao, 'ok', 7000);
+}
+async function moTheoRel(rel) {
+  const cha = rel.includes('\\') ? rel.slice(0, rel.lastIndexOf('\\')) : '';
+  if (!cungDuongDan($('#cha').value, cha)) $('#cha').value = cha;
+  await taiDs();
+  const i = DS.findIndex(d => cungDuongDan(d.rel, rel));
+  if (i >= 0) await chon(i); else toast(`Không thấy "${rel}" trong danh sách.`, 'warn');
+}
+// Chọn folder ngay trong ứng dụng (hộp thoại Windows mở từ máy chủ chạy nền thường bị Windows đặt nằm sau trình duyệt)
+// Có ô đánh dấu ở từng folder: đánh dấu nhiều folder (kể cả ở các thư mục khác nhau) rồi thêm một lượt.
+async function chonFolder() {
+  let cur = '', ds = [], cha = '', thoatWin = false;
+  const DAU = new Map();   // đường dẫn đầy đủ → tên: các folder đã đánh dấu
+  const batDau = (TQ.goc || '') + (chaHienTai() ? '\\' + chaHienTai() : '');
+  const capNhat = box => {
+    const n = DAU.size, ok = box.querySelector('[data-nut="ok"]');
+    ok.textContent = n ? `Thêm ${n} folder đã đánh dấu` : 'Chọn folder đang mở'; ok.disabled = !n && !cur;
+    box.querySelector('#dy-gio').innerHTML = n ? `<b>Đã đánh dấu ${n}:</b> ` + [...DAU].map(([p, t], j) => `<span class="badge b-info dy-chip" title="${esc(p)}">${esc(t)} <a href="#" data-bo="${j}" title="Bỏ đánh dấu">✕</a></span>`).join(' ') + ' <a href="#" id="dy-boall" style="font-size:12px">bỏ hết</a>' : '';
+    box.querySelectorAll('[data-bo]').forEach(a => a.onclick = e => { e.preventDefault(); DAU.delete([...DAU.keys()][+a.dataset.bo]); capNhat(box); veDau(box); });
+    const ba = box.querySelector('#dy-boall'); if (ba) ba.onclick = e => { e.preventDefault(); DAU.clear(); capNhat(box); veDau(box); };
+    const all = box.querySelector('#dy-all'); if (all) { const so = ds.filter(d => DAU.has(d.duong_dan)).length; all.checked = !!ds.length && so === ds.length; all.indeterminate = so > 0 && so < ds.length; }
+  };
+  const veDau = box => box.querySelectorAll('.dy-ck').forEach(c => { c.checked = DAU.has(ds[+c.dataset.i].duong_dan); });
+  const ve = async (box, p) => {
+    const el = box.querySelector('#dy-ds'), dd = box.querySelector('#dy-dd'), tt = box.querySelector('#dy-tt');
+    el.innerHTML = '<div class="dy-trong">Đang tải…</div>';
+    try {
+      const r = await fetchJson('/api/duyet?p=' + encodeURIComponent(p || ''));
+      cur = r.duong_dan || ''; ds = arr(r.ds); cha = r.cha || '';
+      dd.value = cur;
+      box.querySelector('#dy-noi').innerHTML = arr(r.noi).map((n, i) => `<button class="chip${cungDuongDan(n.duong_dan, cur) ? ' on' : ''}" data-noi="${i}">${esc(n.ten)}</button>`).join('');
+      box.querySelectorAll('[data-noi]').forEach(b => b.onclick = () => ve(box, arr(r.noi)[+b.dataset.noi].duong_dan));
+      box.querySelector('#dy-len').disabled = !cur;
+      el.innerHTML = !cur ? '<div class="dy-trong">Chọn một nơi ở trên để bắt đầu.</div>'
+        : ds.length ? `<label class="dy-row dy-head"><input type="checkbox" id="dy-all"><span class="t">Đánh dấu tất cả ${ds.length} thư mục ở đây</span></label>`
+          + ds.map((d, i) => `<div class="dy-row" data-i="${i}" title="${esc(d.duong_dan)} – bấm để mở, đánh dấu ô bên trái để thêm"><input type="checkbox" class="dy-ck" data-i="${i}">${I.fold}<span class="t">${esc(d.ten)}</span>${d.ho_so ? '<span class="badge b-ok">có văn bản</span>' : ''}</div>`).join('')
+        : '<div class="dy-trong">Không có thư mục con.</div>';
+      el.querySelectorAll('.dy-row[data-i]').forEach(x => x.onclick = e => { if (e.target.classList.contains('dy-ck')) return; ve(box, ds[+x.dataset.i].duong_dan); });
+      el.querySelectorAll('.dy-ck').forEach(c => c.onchange = () => { const d = ds[+c.dataset.i]; if (c.checked) DAU.set(d.duong_dan, d.ten); else DAU.delete(d.duong_dan); capNhat(box); });
+      const all = el.querySelector('#dy-all'); if (all) all.onchange = () => { ds.forEach(d => { if (all.checked) DAU.set(d.duong_dan, d.ten); else DAU.delete(d.duong_dan); }); veDau(box); capNhat(box); };
+      veDau(box);
+      tt.innerHTML = !cur ? '' : r.so_tep ? `Thư mục này có <b>${r.so_tep}</b> văn bản PDF/Word – là một folder hồ sơ.` : `Thư mục chứa ${ds.length} thư mục con. Đánh dấu các folder cần thêm (có thể đánh dấu ở nhiều thư mục khác nhau), rồi bấm "Thêm".`;
+      capNhat(box);
+    } catch (e) { el.innerHTML = `<div class="dy-trong" style="color:var(--bad,#b42318)">${esc(e.message)}</div>`; }
+  };
+  const r = await hoi({
+    tieuDe: 'Chọn folder hồ sơ', rong: 'w',
+    noiDung: `<div class="dy-noi" id="dy-noi"></div>
+      <div class="dy-bar"><button class="btn sm" id="dy-len" title="Lên thư mục cha">↑ Lên</button><input class="dy-inp inp" id="dy-dd" placeholder="Dán hoặc gõ đường dẫn rồi nhấn Enter"></div>
+      <div class="dy-ds" id="dy-ds"></div><div class="dy-tt" id="dy-tt"></div><div class="dy-gio" id="dy-gio"></div>`,
+    chuThich: '<a href="#" id="dy-win" style="font-size:12.5px">Dùng hộp thoại Windows</a>',
+    nut: [{ id: 'ok', label: 'Chọn folder đang mở', pri: true }, { id: 'huy', label: 'Hủy' }],
+    sauKhiMo: box => {
+      const dd = box.querySelector('#dy-dd');
+      dd.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); ve(box, dd.value.trim()); } });
+      box.querySelector('#dy-len').onclick = () => ve(box, cha);
+      box.querySelector('#dy-win').onclick = e => { e.preventDefault(); thoatWin = true; box.querySelector('[data-nut="huy"]').click(); };
+      ve(box, batDau);
+    }
+  });
+  if (thoatWin) return chonFolderWindows();
+  if (!r || r.nut !== 'ok') return;
+  if (DAU.size) return nhapNhieu([...DAU.keys()]);
+  if (!cur) return;
+  $('#dd').value = cur; await nhapDuongDan();
+}
+async function chonFolderWindows() {
+  try {
+    const r = await api('/api/chon-folder', { cha: chaHienTai() }, 'Hộp thoại chọn folder đang mở…', 'Nếu không thấy, hộp thoại có thể nằm sau cửa sổ này. Chọn folder rồi bấm "Chọn folder này".');
+    if (!r.duong_dan) return; $('#dd').value = r.duong_dan; await nhapDuongDan();
+  } catch (e) { bao(e); }
+}
+// ====================== Thêm nhiều folder một lượt ======================
+// Tách nhiều đường dẫn dán vào ô: "C:\a" "C:\b" (Explorer → Copy as path), hoặc cách nhau bằng xuống dòng / dấu ;
+function tachDuongDan(s) {
+  const q = [...String(s || '').matchAll(/"([^"]+)"/g)].map(m => m[1].trim()).filter(Boolean);
+  const ds = q.length ? q : String(s || '').split(/[\r\n;]+/).map(x => x.trim()).filter(Boolean);
+  return [...new Set(ds)];
+}
+// Kiểm tra danh sách đường dẫn → hỏi xác nhận một lần → sao chép (folder ngoài dự án) → phân tích → bảng tổng kết.
+// Folder không phải hồ sơ (vd "Tháng 11") được tách thành các hồ sơ con có văn bản.
+async function nhapNhieu(paths) {
+  paths = arr(paths); if (!paths.length) return;
+  const cha = chaHienTai(), noiDen = cha || 'thư mục gốc dự án';
+  const ds = [], boQua = [];
+  const them = (r, path, tu, nhom) => {
+    if (ds.some(x => x.ten.toLowerCase() === r.ten.toLowerCase())) { boQua.push({ ten: r.ten, ly_do: 'trùng tên với một folder khác trong danh sách' }); return; }
+    ds.push({ ten: r.ten, ngoai: !!r.ngoai, rel: r.rel || '', path: r.duong_dan || path, so_file: r.so_file, tu, nhom: nhom || '' });
+  };
+  try {
+    for (let k = 0; k < paths.length; k++) {
+      busy(true, `Đang kiểm tra folder… ${k + 1}/${paths.length}`, paths[k]);
+      let r; try { r = await fetchJson('/api/nhap-folder', { duong_dan: paths[k], cha, sao_chep: false }); } catch (e) { boQua.push({ ten: paths[k], ly_do: e.message }); continue; }
+      if (r.la_ho_so) { them(r, paths[k]); continue; }
+      // Folder tổng (vd "GỬI … (tháng 1-10.2026)" → THÁNG N → Doanh nghiệp → thư mục loại VB): tìm mọi hồ sơ bên trong, giữ nhóm (THÁNG N) khi sao chép
+      const full = r.ngoai ? r.duong_dan : (TQ.goc + '\\' + r.rel);
+      busy(true, `Đang đọc cấu trúc folder… ${k + 1}/${paths.length}`, full);
+      let tim = { ds: [] }; try { tim = await fetchJson('/api/tim-ho-so?p=' + encodeURIComponent(full)); } catch (e) { boQua.push({ ten: r.ten, ly_do: e.message }); continue; }
+      if (!arr(tim.ds).length) { boQua.push({ ten: r.ten, ly_do: 'không tìm thấy hồ sơ nào (không có PDF/Word, hoặc thư mục loại văn bản)' }); continue; }
+      for (const c of arr(tim.ds)) {
+        const rc = { ten: c.ten, ngoai: !c.trong_du_an, rel: c.trong_du_an ? c.duong_dan.slice(TQ.goc.length + 1) : '', duong_dan: c.duong_dan, so_file: c.so_tep };
+        them(rc, c.duong_dan, (c.nhom ? r.ten + ' › ' + c.nhom : r.ten), c.nhom);
+      }
+    }
+  } finally { busy(false); }
+  const htmlBoQua = boQua.length ? `<p style="margin-top:10px"><b>Bỏ qua ${boQua.length} folder:</b></p><ul class="plain">${boQua.map(x => `<li><b>${esc(x.ten)}</b>: ${esc(x.ly_do)}</li>`).join('')}</ul>` : '';
+  if (!ds.length) return hoi({ tieuDe: 'Không có folder hồ sơ nào để thêm', noiDung: htmlBoQua || '<p>Không tìm thấy folder hồ sơ.</p>', nut: [{ id: 'ok', label: 'Đóng', pri: true }] });
+  let phanTich = true;
+  const nNgoai = ds.filter(x => x.ngoai).length;
+  const r = await hoi({ tieuDe: `Thêm ${ds.length} folder hồ sơ`, rong: 'w',
+    noiDung: `<p>${nNgoai ? `<b>${nNgoai}</b> folder nằm ngoài dự án sẽ được <b>sao chép</b> vào <code>${esc(noiDen)}</code> (bản gốc giữ nguyên).` : ''}${ds.length - nNgoai ? ` <b>${ds.length - nNgoai}</b> folder đã có trong dự án, chỉ phân tích.` : ''}</p>
+      <div class="dy-ds" style="height:auto;max-height:42vh;margin:8px 0">${ds.map(x => `<div class="dy-row" style="cursor:default">${I.fold}<span class="t">${esc(x.ten)}${x.tu ? ` <span style="color:var(--muted)">– trong "${esc(x.tu)}"</span>` : ''}</span><span class="badge">${x.so_file} tệp</span>${x.ngoai ? '<span class="badge b-info">sao chép</span>' : '<span class="badge">có sẵn</span>'}</div>`).join('')}</div>
+      <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="nn-pt" checked> Phân tích ngay sau khi thêm (đọc PDF, OCR – mỗi hồ sơ mới có thể mất 1–2 phút)</label>${htmlBoQua}`,
+    nut: [{ id: 'ok', label: `Thêm ${ds.length} folder`, pri: true }, { id: 'huy', label: 'Hủy' }],
+    sauKhiMo: box => { box.querySelector('#nn-pt').onchange = e => { phanTich = e.target.checked; }; } });
+  if (!r || r.nut !== 'ok') return;
+  // Sao chép rồi phân tích, mỗi folder một dòng kết quả
+  const kq = [];
+  try {
+    for (let k = 0; k < ds.length; k++) {
+      const x = ds[k], dong = { ten: x.ten, rel: x.rel, ghi: x.ngoai ? '' : 'có sẵn trong dự án', loi: '', tt: '' };
+      if (x.ngoai) {
+        busy(true, `Đang sao chép… ${k + 1}/${ds.length}`, x.ten);
+        try { const c = await fetchJson('/api/nhap-folder', { duong_dan: x.path, cha: x.nhom ? (cha ? cha + '\\' : '') + x.nhom : cha, sao_chep: true }); dong.rel = c.rel; dong.ghi = `${c.moi} tệp mới, ${c.trung} tệp đã có${c.khac ? ', ' + c.khac + ' tệp khác nội dung (giữ bản trong dự án)' : ''}`; }
+        catch (e) { dong.loi = e.message; }
+      }
+      kq.push(dong);
+    }
+    if (phanTich) await phanTichKetQua(kq);
+  } finally { busy(false); }
+  await tongKetThem(kq, boQua);
+}
+async function phanTichKetQua(kq) {
+  const can = kq.filter(x => x.rel && !x.loi);
+  for (let k = 0; k < can.length; k++) {
+    busy(true, `Đang phân tích hồ sơ… ${k + 1}/${can.length}`, `${can[k].ten} – đọc chữ PDF bằng Word, OCR số văn bản`);
+    try { const p = await fetchJson('/api/phan-tich', { rel: can[k].rel }); can[k].tt = p.trang_thai || ''; } catch (e) { can[k].loi = 'Phân tích lỗi: ' + e.message; }
+  }
+}
+async function tongKetThem(kq, boQua) {
+  boQua = arr(boQua);
+  const ok = kq.filter(x => x.rel && !x.loi), loi = kq.filter(x => x.loi);
+  try { KHO = arr((await fetchJson('/api/kho')).ds); } catch {}
+  await taiDs();
+  SEL = new Set(DS.filter(d => ok.some(x => cungDuongDan(x.rel, d.rel))).map(d => d.rel)); veChon();
+  if (ok.length === 1 && !loi.length && !boQua.length) { await moTheoRel(ok[0].rel); return toast(`Đã thêm "${ok[0].ten}": ${ok[0].ghi}.`, 'ok', 7000); }
+  await hoi({ tieuDe: `Đã thêm ${ok.length}/${kq.length} folder`, rong: 'w',
+    noiDung: `<table><thead><tr><th>Folder</th><th>Sao chép</th><th>Trạng thái</th></tr></thead><tbody>${kq.map(x => `<tr class="${x.loi ? 'need' : ''}">
+        <td><b>${esc(x.ten)}</b>${x.loi ? `<div style="color:var(--bad);font-size:12px">${esc(x.loi)}</div>` : ''}</td><td style="font-size:12.5px">${esc(x.ghi)}</td>
+        <td>${x.tt ? badge(x.tt) : (x.loi ? '' : '<span class="badge">Chưa phân tích</span>')}</td></tr>`).join('')}</tbody></table>
+      ${boQua.length ? `<p style="margin-top:10px"><b>Bỏ qua ${boQua.length} folder:</b></p><ul class="plain">${boQua.map(x => `<li><b>${esc(x.ten)}</b>: ${esc(x.ly_do)}</li>`).join('')}</ul>` : ''}
+      <p style="color:var(--muted)">Các hồ sơ vừa thêm đang được đánh dấu chọn trong danh sách bên trái.</p>`,
+    nut: [{ id: 'ok', label: 'Đóng', pri: true }] });
+}
+
+async function nhapDuongDan(saoChep) {
+  const ps = tachDuongDan($('#dd').value);
+  if (ps.length > 1 && !saoChep) { $('#dd').value = ''; return nhapNhieu(ps); }
+  if (ps.length === 1) $('#dd').value = ps[0];
+  const p = $('#dd').value.trim(); if (!p) return toast('Chưa có đường dẫn folder.', 'warn');
+  try {
+    const r = await api('/api/nhap-folder', { duong_dan: p, cha: chaHienTai(), sao_chep: !!saoChep }, saoChep ? 'Đang sao chép folder vào dự án…' : 'Đang kiểm tra folder…');
+    if (r.ngoai) {
+      if (await xacNhan('Folder ngoài dự án', `<p>Folder <b>${esc(r.ten)}</b> (${r.so_file} tệp) nằm ngoài thư mục dự án; ứng dụng chỉ làm việc với folder trong dự án.</p><p>Sao chép vào <code>${esc(chaHienTai() || 'thư mục gốc')}</code>? Bản gốc giữ nguyên.</p>`, 'Sao chép vào dự án')) return nhapDuongDan(true);
+      return;
+    }
+    $('#dd').value = '';
+    if (r.sao_chep) return xuLySauThem(r.rel, `Đã sao chép "${r.ten}": ${r.moi} tệp mới, ${r.trung} tệp đã có${r.khac ? ', ' + r.khac + ' tệp khác nội dung (giữ bản trong dự án)' : ''}.`);
+    if (r.la_ho_so) { await moTheoRel(r.rel); if (CUR && !CUR.da_chuan_bi) await xuLySauThem(r.rel, `Đã phân tích "${r.ten}".`); }
+    else { $('#cha').value = r.rel; await taiDs(); toast(`Đã mở thư mục "${r.ten}": ${DS.length} folder hồ sơ.`, 'ok'); }
+  } catch (e) { bao(e); }
+}
+
+// ====================== Công cụ ======================
+async function kiemTra() {
+  try { const r = await api('/api/kiem-tra', {}, 'Đang kiểm tra máy…', 'Mở thử Excel và Word'); const el = $('#kt'); el.style.display = 'block';
+    el.innerHTML = r.log.split('\n').map(l => /^OK\b/.test(l) ? `<span class="ok">${esc(l)}</span>` : /^LỖI\b/.test(l) ? `<span class="bad">${esc(l)}</span>` : esc(l)).join('\n'); } catch (e) { bao(e); }
+}
+async function tat() {
+  if (!await xacNhan('Tắt ứng dụng', '<p>Tắt máy chủ cục bộ và đóng ứng dụng?</p>', 'Tắt', true)) return;
+  try { await api('/api/tat', {}); } catch {}
+  document.body.innerHTML = '<div class="empty" style="padding-top:20vh"><b>Đã tắt ứng dụng</b>Có thể đóng cửa sổ này. Mở lại bằng phím tắt "Hồ sơ ABTC" hoặc file "Mở ứng dụng.bat".</div>';
+}
+init();
+</script>
+</body>
+</html>

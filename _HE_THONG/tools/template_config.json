@@ -1,0 +1,20 @@
+{
+  "_ghi_chu": "Cấu hình chung cho build_excel_templates.ps1 và migrate_data.ps1. thu_muc_goc = folder chứa file Excel gốc (tính từ thư mục CƠ SỞ DỮ LIỆU 2026). dong_mau = dòng dữ liệu đầu tiên của sheet.",
+  "thu_muc_goc": "DỮ LIỆU GỐC",
+  "files": [
+    { "file": "ABTC 2026.xlsx", "sheets": [ { "sheet": "ABTC 2026", "dong_mau": 5 } ] },
+    { "file": "BẢO HỘ CÔNG DÂN.xlsx", "sheets": [
+        { "sheet": "BHCD VN ở nước ngoài", "dong_mau": 4 },
+        { "sheet": "BHCD NN tại VIỆT NAM", "dong_mau": 6 } ] },
+    { "file": "HNHTQT _ TTHC _ 2026.xlsx", "sheets": [ { "sheet": "TTHC HNHTQT", "dong_mau": 8 } ] },
+    { "file": "NHẬP CẢNH 2026.xlsx", "sheets": [
+        { "sheet": "GIA HẠN VISA NĂM 2026", "dong_mau": 6 },
+        { "sheet": "NHẬP CẢNH 2026", "dong_mau": 6 } ] },
+    { "file": "ĐOÀN RA, VÀO, CỬ CÔNG TÁC, VIỆC RIÊNG 2026.xlsx", "sheets": [
+        { "sheet": "ĐOÀN RA CẤP SỞ NGÀNH 2026", "dong_mau": 5 },
+        { "sheet": "ĐOÀN VÀO CẤP SỞ NGÀNH 2026", "dong_mau": 5 },
+        { "sheet": "ĐOÀN VÀO CẤP THÀNH PHỐ 2026", "dong_mau": 5 },
+        { "sheet": "CỬ CÁN BỘ ĐI CÔNG TÁC 2026", "dong_mau": 4 },
+        { "sheet": "CÁN BỘ DIỆN BTV TU ĐI VIỆC RIÊN", "dong_mau": 5 } ] }
+  ]
+}
