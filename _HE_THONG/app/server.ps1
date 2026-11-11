@@ -7,6 +7,13 @@ $APP = $PSScriptRoot
 $GOC = $Script:GOC
 $EXCEL = P 'KẾT QUẢ\CƠ SỞ DỮ LIỆU\ABTC 2026.xlsx'
 $MAC_DINH = 'Folder Hồ sơ ABTC Mẫu'
+# Máy mới chưa có file Excel tổng hợp: tạo từ mẫu rỗng (chỉ khi file chưa tồn tại – không bao giờ ghi đè dữ liệu đã nhập)
+try {
+  if (-not (Test-Path -LiteralPath $EXCEL)) {
+    $mau = P 'KẾT QUẢ\MẪU\MẪU - ABTC 2026.xlsx'
+    if (Test-Path -LiteralPath $mau) { New-Item -ItemType Directory -Force (Split-Path $EXCEL -Parent) | Out-Null; Copy-Item -LiteralPath $mau -Destination $EXCEL }
+  }
+} catch { Write-Host "Không tạo được file Excel tổng hợp từ mẫu: $($_.Exception.Message)" }
 
 function Send($ctx, [byte[]]$bytes, [string]$type, [int]$code = 200) {
   $r = $ctx.Response; $r.StatusCode = $code; $r.ContentType = $type; $r.Headers.Add('Cache-Control', 'no-store')

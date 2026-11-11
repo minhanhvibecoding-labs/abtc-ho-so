@@ -1,0 +1,12 @@
+﻿HỒ SƠ ABTC – HƯỚNG DẪN CÀI ĐẶT (bản 2026.11.12)
+
+1. Giải nén file ZIP (chuột phải → Extract All / Giải nén tất cả).
+2. Mở thư mục vừa giải nén, bấm đúp "Cai dat Ho so ABTC.bat".
+   - Lần đầu: phần mềm được cài vào Documents\CƠ SỞ DỮ LIỆU 2026, tạo lối tắt "Hồ sơ ABTC" trên Desktop và mở ứng dụng.
+   - Lần sau: bấm lối tắt "Hồ sơ ABTC" trên Desktop.
+3. Cửa sổ PowerShell thu nhỏ dưới taskbar là máy chủ của ứng dụng – giữ nó mở trong lúc dùng.
+
+Yêu cầu: Windows 10/11, Microsoft Office (Excel, Word), Microsoft Edge. Không cần cài thêm gì.
+Ứng dụng chạy hoàn toàn trên máy (localhost), không gửi dữ liệu ra ngoài.
+Gói chỉ có phần mềm và mẫu Excel rỗng, không có dữ liệu hồ sơ.
+Khi nhận bộ cài bản mới hơn: chạy lại "Cai dat Ho so ABTC.bat" – chỉ phần mềm được cập nhật, dữ liệu giữ nguyên.

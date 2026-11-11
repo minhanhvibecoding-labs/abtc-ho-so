@@ -855,6 +855,8 @@ function Rename-HoSoTep {
   $keyMoi
 }
 function Read-ExcelRows([string]$Excel, [string]$Sheet = 'ABTC 2026') {
+  # Máy mới chưa có file Excel tổng hợp: coi như bảng trống (mọi hồ sơ là dòng mới, bắt đầu từ dòng 5) thay vì báo lỗi
+  if (-not $Excel -or -not (Test-Path -LiteralPath $Excel)) { return @{ rows = @{}; maxRow = 4; maxStt = 0; thieu_file = $true } }
   $txt = Read-Xlsx -Path $Excel; $rows = @{}; $in = $false; $maxRow = 0; $maxStt = 0
   foreach ($line in [IO.File]::ReadAllLines($txt, [Text.Encoding]::UTF8)) {
     if ($line -like '===== SHEET:*') { $in = ($line -eq "===== SHEET: $Sheet =====") ; continue }
@@ -1326,7 +1328,7 @@ function Invoke-PhanTich {
     foreach ($r in ($ex.rows.Keys | Sort-Object -Descending)) { $rr = $ex.rows[$r]; if ($r -lt 5) { continue }
       if ((Remove-Dau $rr['D']) -like "*$loiKey*") { $g = Remove-Dau $rr['G']; if (@($nguoi.Keys | Where-Object { $g -like "*$_*" }).Count) { $dong = $r; $cachGhep = 'tên DN + tên doanh nhân'; break } } }
   }
-  $moi = -not $dong; if ($moi) { $dong = $ex.maxRow + 1; [void]$canhBao.Add("Không tìm thấy dòng Excel khớp – đề xuất thêm dòng mới $dong (kiểm tra kỹ trước khi ghi)") }
+  $moi = -not $dong; if ($moi) { $dong = [Math]::Max($ex.maxRow + 1, 5); [void]$canhBao.Add("Không tìm thấy dòng Excel khớp – đề xuất thêm dòng mới $dong (kiểm tra kỹ trước khi ghi)") }
   $cur = if ($moi) { @{} } else { $ex.rows[$dong] }
   $deXuat = @(); $khacBiet = @()
   $flat = { param($s) (([string]$s) -replace "`r", '' -replace "`n", ' / ').Trim() }
